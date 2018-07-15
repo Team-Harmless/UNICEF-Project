@@ -15,6 +15,11 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+private slots:
+    void on_actionImport_Schools_triggered();
+
+    void on_actionImport_Hospitals_triggered();
+
 private:
     Ui::MainWindow *ui;
 };
