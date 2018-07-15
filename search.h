@@ -3,6 +3,15 @@
 #include <QString>
 #include <QList>
 
+/*
+ * Assumtions:
+ * Both Data and Data->data are heap allocated
+ * Tre *A;
+ * (Data*)A is valid
+ * (QString*)A is also valid
+ * #PointersAreMagic
+*/
+
 struct Data {
     QString *name;
     void *data;
@@ -17,9 +26,11 @@ class Search
 {
 public:
     Search();
+    ~Search();
     void addData(QString name, Data *data);
     Tre* searchForTre(QString);
     QList<QString> searchForList(QString);
+    Data* getElement(QString name);
 
 private:
 

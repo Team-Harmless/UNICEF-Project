@@ -39,9 +39,22 @@ QList<QString> flattern(Tre *root) {
     return data;
 }
 
+void deleteTre(Tre *root) { //This function is savage. Don't use it unless you know no subtrees are needed.
+    for(int i = 0; i < 26; i++)
+        if (root->next[i] != NULL) deleteTre(root->next[i]);
+    free(root->data->data);
+    free(root->data);
+    free(root);
+}
+
 Search::Search()
 {
     searchableData = (Tre*)malloc(sizeof(Tre));
+}
+
+Search::~Search()
+{
+    deleteTre(searchableData);
 }
 
 void Search::addData(QString name, Data *data)
@@ -50,12 +63,21 @@ void Search::addData(QString name, Data *data)
     inserted->data->name = &name;
 }
 
-Tre* Search::searchForTre(QString name) {
+Tre* Search::searchForTre(QString name)
+{
     return _searchFor(searchableData, name.toLower().toLatin1().data());
 }
 
-QList<QString> Search::searchForList(QString name) {
+QList<QString> Search::searchForList(QString name)
+{
     Tre *results = searchForTre(name);
     if (results == NULL) QList<QString>();
     return flattern(results);
+}
+
+Data* Search::getElement(QString name)
+{
+    Tre *ret = _searchFor(searchableData, name.toLower().toLatin1().data());
+    if (ret == NULL) return NULL;
+    return (Data*)ret;
 }
