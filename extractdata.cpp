@@ -5,18 +5,9 @@
 #include <iterator>
 #include <QDebug>
 #include <QString>
+#include "extractdata.h"
 
-struct School
-{
-    QString id;
-    int colour[3];
-    QString name;
-    double xCoordinate;
-    double yCoordinate;
-
-};
-
-School * getData()
+School * getSchools()
 {
     QFile sourceFile;
     sourceFile.setFileName("schools.json");
@@ -28,28 +19,60 @@ School * getData()
     QJsonArray jsonArray = sourceAsJson["features"].toArray();
 
     School * schools = new School[jsonArray.size()];
-    int schoolCount = 0;
-    foreach (const QJsonValue & value, jsonArray)
+    for (int schoolCount = 0; schoolCount < jsonArray.size(); schoolCount++)
     {
-        QJsonObject schoolObject = value.toObject();
+        QJsonObject schoolObject = jsonArray.at(schoolCount).toObject();
         QJsonObject properties = schoolObject["properties"].toObject();
         struct School school;
         school.id = properties["admin_id"].toString();
         QJsonArray colourArray = properties["color"].toArray();
 
-        int index = 0;
-        foreach (const QJsonValue & colour, colourArray)
-        {
-            school.colour[index] = colour.toInt();
-            index++;
-        }
+        for (int index = 0; index < colourArray.size(); index++)
+            school.colour[index] = colourArray.at(index).toInt();
 
         QJsonObject geometry = schoolObject["geometry"].toObject();
         QJsonArray  coordinates = geometry["coordinates"].toArray();
         school.xCoordinate = coordinates.takeAt(0).toDouble();
         school.yCoordinate = coordinates.takeAt(1).toDouble();
         schools[schoolCount] = school;
-        schoolCount++;
     }
     return schools;
+
+  
+} 
+
+HealthFacility * getHealthFacilities()
+{
+    QFile sourceFile;
+    sourceFile.setFileName("colombia.geojson");
+    sourceFile.open(QIODevice::ReadOnly | QIODevice::Text);
+    QString sourceData = sourceFile.readAll();
+    QJsonParseError error;
+    QJsonDocument jsonDocument = QJsonDocument::fromJson(sourceData.toUtf8(), &error);
+    QJsonObject sourceAsJson = jsonDocument.object();
+    QJsonArray jsonArray = sourceAsJson["features"].toArray();
+
+    HealthFacility * healthFacilities = new HealthFacility[jsonArray.size()];
+    for (int healthFacilityCount = 0; healthFacilityCount < jsonArray.size(); healthFacilityCount++)
+    {
+        QJsonObject healthFacilityObject = jsonArray.at(healthFacilityCount).toObject();
+        QJsonObject properties = healthFacilityObject["properties"].toObject();
+        struct HealthFacility healthFacility;
+        healthFacility.id = properties["uuid"].toString();
+        healthFacility.name = properties["name"].toString();
+        healthFacility.type = properties["type"].toString();
+        healthFacility.dateModified = properties["date_modified"].toString();
+        healthFacility.sourceURL = properties["source_url"].toString();
+        healthFacility.source = properties["source"].toString();
+        healthFacility.completeness = properties["completeness"].toString();
+        healthFacility.version = properties["version"].toString();
+        healthFacility.upstream = properties["upstream"].toString();
+        healthFacility.what3words = properties["what3words"].toString();
+        QJsonObject geometry = properties["geometry"].toObject();
+        QJsonArray  coordinates  = properties["geometry"].toArray();
+        healthFacility.xCoordinate = coordinates.at(0).toDouble();
+        healthFacility.yCoordinate = coordinates.at(1).toDouble();
+        healthFacilities[healthFacilityCount] = healthFacility;
+    }
+    return healthFacilities;
 }

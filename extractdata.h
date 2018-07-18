@@ -13,6 +13,23 @@ struct School
 
 };
 
-School* getData();
+struct HealthFacility
+{
+  QString name;
+  QString type;
+  QString source;
+  QString sourceURL;
+  QString dateModified;
+  QString id;
+  QString completeness;
+  QString version;
+  QString upstream;
+  QString what3words;
+  double xCoordinate;
+  double yCoordinate;
+};
+
+HealthFacility * getHealthFacilities();
+School* getSchools();
 
 
