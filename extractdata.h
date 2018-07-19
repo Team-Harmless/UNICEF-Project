@@ -29,7 +29,8 @@ struct HealthFacility
   double yCoordinate;
 };
 
-HealthFacility * getHealthFacilities();
+void getSchools(School*& schools, int * arraySize);
+void getHealthFacilities(HealthFacility*& healthFacilities, int * arraySize);
 School* getSchools();
 
 

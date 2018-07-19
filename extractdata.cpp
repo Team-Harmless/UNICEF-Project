@@ -7,7 +7,7 @@
 #include <QString>
 #include "extractdata.h"
 
-School * getSchools()
+void getSchools(School*& schools, int * arraySize)
 {
     QFile sourceFile;
     sourceFile.setFileName("schools.json");
@@ -18,7 +18,8 @@ School * getSchools()
     QJsonObject sourceAsJson = jsonDocument.object();
     QJsonArray jsonArray = sourceAsJson["features"].toArray();
 
-    School * schools = new School[jsonArray.size()];
+    *arraySize = jsonArray.size();
+    schools = new School[*arraySize];
     for (int schoolCount = 0; schoolCount < jsonArray.size(); schoolCount++)
     {
         QJsonObject schoolObject = jsonArray.at(schoolCount).toObject();
@@ -36,12 +37,9 @@ School * getSchools()
         school.yCoordinate = coordinates.takeAt(1).toDouble();
         schools[schoolCount] = school;
     }
-    return schools;
-
-  
 } 
 
-HealthFacility * getHealthFacilities()
+void getHealthFacilities(HealthFacility*& healthFacilities, int * arraySize)
 {
     QFile sourceFile;
     sourceFile.setFileName("colombia.geojson");
@@ -52,7 +50,8 @@ HealthFacility * getHealthFacilities()
     QJsonObject sourceAsJson = jsonDocument.object();
     QJsonArray jsonArray = sourceAsJson["features"].toArray();
 
-    HealthFacility * healthFacilities = new HealthFacility[jsonArray.size()];
+    *arraySize = jsonArray.size();
+    healthFacilities = new HealthFacility[*arraySize];
     for (int healthFacilityCount = 0; healthFacilityCount < jsonArray.size(); healthFacilityCount++)
     {
         QJsonObject healthFacilityObject = jsonArray.at(healthFacilityCount).toObject();
@@ -74,5 +73,14 @@ HealthFacility * getHealthFacilities()
         healthFacility.yCoordinate = coordinates.at(1).toDouble();
         healthFacilities[healthFacilityCount] = healthFacility;
     }
-    return healthFacilities;
 }
+
+
+//    School * schools;
+//    int schoolsArraySize;
+//    getSchools(schools, &schoolsArraySize);
+//    qDebug() << schools[0].colour[0];
+//    HealthFacility * healthFacilities;
+//    int healthFacilitiesArraySize;
+//    getHealthFacilities(healthFacilities, &healthFacilitiesArraySize);
+//    qDebug() << healthFacilities[0].id;
