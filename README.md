@@ -35,4 +35,4 @@ This will be updated when the UI is finished
 - [ ] Google map integration
 
 ![LOGO]
-<img src="./logo.svg">
+<img src="./logo.png">
