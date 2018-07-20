@@ -24,19 +24,21 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-        main.cpp \
+        main.cpp\
         mainwindow.cpp \
         extractdata.cpp \
         place.cpp \
         school.cpp \
-        healthfacility.cpp
+        healthfacility.cpp \
+        search.cpp
 
 HEADERS += \
         mainwindow.h \
         extractdata.h \
         place.h \
         school.h \
-        healthfacility.h
+        healthfacility.h \
+        search.h
 
 FORMS += \
         mainwindow.ui
