@@ -3,6 +3,8 @@
 
 #endif // EXTARCTDATA_H
 
+#include <QList>
+
 struct School
 {
     QString id;
@@ -29,8 +31,8 @@ struct HealthFacility
   double yCoordinate;
 };
 
-void getSchools(School*& schools, int * arraySize);
-void getHealthFacilities(HealthFacility*& healthFacilities, int * arraySize);
+QList<School> getSchools(QString filepath);
+QList<HealthFacility> getHealthFacilities(QString filepath);
 School* getSchools();
 
 
