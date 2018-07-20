@@ -33,3 +33,6 @@ This will be updated when the UI is finished
 - [ ] General UI
 - [ ] QML renderer of graph
 - [ ] Google map integration
+
+![LOGO]
+<img src="./logo.svg">
