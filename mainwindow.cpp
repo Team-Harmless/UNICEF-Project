@@ -25,5 +25,5 @@ void MainWindow::on_actionImport_Schools_triggered() //Gets full path to file
 void MainWindow::on_actionImport_Hospitals_triggered()
 {
     QString documentsLocation = QStandardPaths::locate(QStandardPaths::DocumentsLocation, QString(), QStandardPaths::LocateDirectory);
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Schools File"), documentsLocation, tr("CSV Files (*.csv)"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Schools File"), documentsLocation, tr("JSON Files (*.json)"));
 }
