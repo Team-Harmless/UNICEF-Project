@@ -6,13 +6,11 @@
 #include <QDebug>
 #include <QString>
 #include "extractdata.h"
-#include "school.h"
-#include "healthfacility.h"
 
-School * getSchools(QString filePath)
+QList<School> getSchools(QString filepath)
 {
     QFile sourceFile;
-    sourceFile.setFileName(filePath);
+    sourceFile.setFileName(filepath);
     sourceFile.open(QIODevice::ReadOnly | QIODevice::Text);
     QString sourceData = sourceFile.readAll();
     QJsonParseError error;
@@ -20,7 +18,8 @@ School * getSchools(QString filePath)
     QJsonObject sourceAsJson = jsonDocument.object();
     QJsonArray jsonArray = sourceAsJson["features"].toArray();
 
-    School *schools = new School[jsonArray.size()];
+    //*arraySize = jsonArray.size(); keeping because gonna change to qvector //TODO
+    QList<School> ret;
     for (int schoolCount = 0; schoolCount < jsonArray.size(); schoolCount++)
     {
         QJsonObject schoolObject = jsonArray.at(schoolCount).toObject();
@@ -36,17 +35,15 @@ School * getSchools(QString filePath)
         QJsonArray  coordinates = geometry["coordinates"].toArray();
         school.xCoordinate = coordinates.takeAt(0).toDouble();
         school.yCoordinate = coordinates.takeAt(1).toDouble();
-        schools[schoolCount] = school;
+        ret << school;
     }
-    return schools;
-
-  
+    return ret;
 } 
 
-HealthFacility * getHealthFacilities(QString filePath)
+QList<HealthFacility> getHealthFacilities(QString filepath)
 {
     QFile sourceFile;
-    sourceFile.setFileName(filePath);
+    sourceFile.setFileName(filepath);
     sourceFile.open(QIODevice::ReadOnly | QIODevice::Text);
     QString sourceData = sourceFile.readAll();
     QJsonParseError error;
@@ -54,7 +51,8 @@ HealthFacility * getHealthFacilities(QString filePath)
     QJsonObject sourceAsJson = jsonDocument.object();
     QJsonArray jsonArray = sourceAsJson["features"].toArray();
 
-    HealthFacility * healthFacilities = new HealthFacility[jsonArray.size()];
+    //*arraySize = jsonArray.size(); keeping becuase gonna change to qvector //TODO
+    QList<HealthFacility> ret;
     for (int healthFacilityCount = 0; healthFacilityCount < jsonArray.size(); healthFacilityCount++)
     {
         QJsonObject healthFacilityObject = jsonArray.at(healthFacilityCount).toObject();
@@ -74,7 +72,17 @@ HealthFacility * getHealthFacilities(QString filePath)
         QJsonArray  coordinates  = properties["geometry"].toArray();
         healthFacility.xCoordinate = coordinates.at(0).toDouble();
         healthFacility.yCoordinate = coordinates.at(1).toDouble();
-        healthFacilities[healthFacilityCount] = healthFacility;
+        ret << healthFacility;
     }
-    return healthFacilities;
+    return ret;
 }
+
+
+//    School * schools;
+//    int schoolsArraySize;
+//    getSchools(schools, &schoolsArraySize);
+//    qDebug() << schools[0].colour[0];
+//    HealthFacility * healthFacilities;
+//    int healthFacilitiesArraySize;
+//    getHealthFacilities(healthFacilities, &healthFacilitiesArraySize);
+//    qDebug() << healthFacilities[0].id;
