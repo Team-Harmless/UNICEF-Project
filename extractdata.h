@@ -3,6 +3,10 @@
 
 #endif // EXTARCTDATA_H
 
+class HealthFacility;
+class School;
+
+/*
 struct School
 {
     QString id;
@@ -28,8 +32,10 @@ struct HealthFacility
   double xCoordinate;
   double yCoordinate;
 };
+*/
 
-HealthFacility * getHealthFacilities();
-School* getSchools();
+// remember to free the return!!!
+HealthFacility * getHealthFacilities(QString filePath);
+School* getSchools(QString filePath);
 
 

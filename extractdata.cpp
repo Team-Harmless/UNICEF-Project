@@ -1,4 +1,4 @@
-#include <qfile.h>
+#include <QFile>
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
@@ -6,11 +6,13 @@
 #include <QDebug>
 #include <QString>
 #include "extractdata.h"
+#include "school.h"
+#include "healthfacility.h"
 
-School * getSchools()
+School * getSchools(QString filePath)
 {
     QFile sourceFile;
-    sourceFile.setFileName("schools.json");
+    sourceFile.setFileName(filePath);
     sourceFile.open(QIODevice::ReadOnly | QIODevice::Text);
     QString sourceData = sourceFile.readAll();
     QJsonParseError error;
@@ -18,7 +20,7 @@ School * getSchools()
     QJsonObject sourceAsJson = jsonDocument.object();
     QJsonArray jsonArray = sourceAsJson["features"].toArray();
 
-    School * schools = new School[jsonArray.size()];
+    School *schools = new School[jsonArray.size()];
     for (int schoolCount = 0; schoolCount < jsonArray.size(); schoolCount++)
     {
         QJsonObject schoolObject = jsonArray.at(schoolCount).toObject();
@@ -41,7 +43,7 @@ School * getSchools()
   
 } 
 
-HealthFacility * getHealthFacilities()
+HealthFacility * getHealthFacilities(QString filePath)
 {
     QFile sourceFile;
     sourceFile.setFileName("colombia.geojson");

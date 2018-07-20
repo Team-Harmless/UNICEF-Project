@@ -5,8 +5,11 @@
 class Place
 {
 public:
-    QString name;
     Place();
+    QString name;
+    QString id;
+    double xCoordinate;
+    double yCoordinate;
 };
 
 #endif // PLACE_H
