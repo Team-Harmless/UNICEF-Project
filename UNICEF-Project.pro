@@ -29,14 +29,14 @@ SOURCES += \
         extractdata.cpp \
     place.cpp \
     school.cpp \
-    hospital.cpp
+    healthfacility.cpp
 
 HEADERS += \
         mainwindow.h \
         extractdata.h \
     place.h \
     school.h \
-    hospital.h
+    healthfacility.h
 
 FORMS += \
         mainwindow.ui
