@@ -34,5 +34,4 @@ This will be updated when the UI is finished
 - [ ] QML renderer of graph
 - [ ] Google map integration
 
-![LOGO]
-<img src="./logo.png">
+![LOGO](./logo.png)
