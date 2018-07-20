@@ -9,6 +9,3 @@
 
 QList<School> getSchools(QString filepath);
 QList<HealthFacility> getHealthFacilities(QString filepath);
-School* getSchools();
-
-
