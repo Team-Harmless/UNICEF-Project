@@ -31,7 +31,8 @@ SOURCES += \
         place.cpp \
         school.cpp \
         healthfacility.cpp \
-        search.cpp
+        search.cpp \
+    comparisons.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -39,7 +40,8 @@ HEADERS += \
         place.h \
         school.h \
         healthfacility.h \
-        search.h
+        search.h \
+    comparisons.h
 
 FORMS += \
         mainwindow.ui

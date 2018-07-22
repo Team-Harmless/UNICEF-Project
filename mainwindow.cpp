@@ -56,12 +56,12 @@ void MainWindow::on_actionImport_Hospitals_triggered()
 
 void MainWindow::unitUpdate(double mult) {
     distanceMultiplier = mult;
-    ui->radiusLable->setText(QString::number((double)ui->rSlider->value() / 10 * distanceMultiplier, 'g', 2));
+    ui->radiusLable->setText(QString::number((double)ui->rSlider->value() / 10 * distanceMultiplier, 'g', ui->rSlider->value() > 100 ? 3 : 2));
 }
 
 void MainWindow::on_rSlider_valueChanged(int value)
 {
-    ui->radiusLable->setText(QString::number((double)value / 10 * distanceMultiplier, 'g', 2));
+    ui->radiusLable->setText(QString::number((double)value / 10 * distanceMultiplier, 'g', value > 100 ? 3 : 2));
 }
 
 void MainWindow::on_kmBox_toggled(bool checked) { if (checked) unitUpdate(1); }
