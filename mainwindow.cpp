@@ -17,6 +17,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+<<<<<<< HEAD
+=======
+    foreach (Place *pl, places) {
+        delete pl;
+    }
+    delete searcher;
+>>>>>>> 428508d... Built Importer
     delete ui;
 }
 
@@ -24,12 +31,30 @@ void MainWindow::on_actionImport_Schools_triggered() //Gets full path to file
 {
     QString documentsLocation = QStandardPaths::locate(QStandardPaths::DocumentsLocation, QString(), QStandardPaths::LocateDirectory);
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Schools File"), documentsLocation, tr("JSON Files (*.json)"));
+<<<<<<< HEAD
+=======
+    if (fileName != "") {
+        QList<Place*> schools = Extractor::getSchools(fileName);
+        searcher->addData(schools);
+        places += schools;
+        ui->actionImport_Schools->setEnabled(false);
+    }
+>>>>>>> 428508d... Built Importer
 }
 
 void MainWindow::on_actionImport_Hospitals_triggered()
 {
     QString documentsLocation = QStandardPaths::locate(QStandardPaths::DocumentsLocation, QString(), QStandardPaths::LocateDirectory);
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Schools File"), documentsLocation, tr("JSON Files (*.json)"));
+<<<<<<< HEAD
+=======
+    if (fileName != "") {
+        QList<Place*> healthFacilities = Extractor::getHealthFacilities(fileName);
+        searcher->addData(healthFacilities);
+        places += healthFacilities;
+        ui->actionImport_Hospitals->setEnabled(false);
+    }
+>>>>>>> 428508d... Built Importer
 }
 
 void MainWindow::unitUpdate(double mult) {

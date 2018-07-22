@@ -23,7 +23,12 @@ class Search
 public:
     Search();
     ~Search();
+<<<<<<< HEAD
     void addData(Data *data);
+=======
+    void addData(Place *data);
+    void addData(QList<Place*> places);
+>>>>>>> 428508d... Built Importer
     Tre* searchForTre(QString);
     QList<QString> searchForList(QString);
     Data* getElement(QString name);
