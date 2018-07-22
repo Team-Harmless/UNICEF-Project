@@ -21,7 +21,7 @@ public:
 private:
     void unitUpdate(double mult);
     Search *searcher;
-    QList<Place> places;
+    QList<Place*> places;
 
 private slots:
     void on_actionImport_Schools_triggered();

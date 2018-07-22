@@ -74,6 +74,13 @@ void Search::addData(Place *data)
     addSearchableData(searchableData, data->name.toLower().toLatin1().data(), data);
 }
 
+void Search::addData(QList<Place*> places)
+{
+    foreach (Place *pl, places) {
+        addData(pl);
+    }
+}
+
 Tre* Search::searchForTre(QString name)
 {
     qDebug() << "Started Search for " << name;
