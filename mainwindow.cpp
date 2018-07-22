@@ -4,6 +4,7 @@
 #include <QStandardPaths>
 #include <QDebug>
 #include "extractdata.h"
+#include <QThread>
 
 double distanceMultiplier = 1;
 
@@ -63,3 +64,49 @@ void MainWindow::on_rSlider_valueChanged(int value)
 void MainWindow::on_kmBox_toggled(bool checked) { if (checked) unitUpdate(1); }
 
 void MainWindow::on_milesBox_toggled(bool checked) { if (checked) unitUpdate(0.621371); }
+
+void MainWindow::on_searchBar_textChanged(const QString &arg1)
+{
+    ui->resultsList->clear();
+    if (arg1 == "") return;
+    QThread *t = new QThread();
+    Worker *w = new Worker();
+    w->searcher = searcher;
+    w->query = arg1;
+    w->moveToThread(t);
+    connect(w, SIGNAL(finished()), t, SLOT(quit()));
+    connect(w, SIGNAL(finished()), w, SLOT(deleteLater()));
+    connect(t, SIGNAL(finished()), t, SLOT(deleteLater()));
+    connect(t, SIGNAL(started()), w, SLOT(doSearch()));
+    connect(w, SIGNAL(addItemToResultsList(QString)), this, SLOT(addItemToRList(QString)));
+    t->start();
+
+}
+
+void MainWindow::addItemToRList(QString s)
+{
+    ui->resultsList->addItem(s);
+}
+
+
+Worker::Worker()
+{
+
+}
+
+Worker::~Worker()
+{
+
+}
+
+void Worker::doSearch()
+{
+    QList<Place*> results = searcher->searchForList(query);
+    int i = 0;
+    foreach(Place *pl, results) {
+        if (i > 50) break;
+        i++;
+        emit(addItemToResultsList(pl->name));
+    }
+    emit(finished());
+}

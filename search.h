@@ -23,7 +23,7 @@ public:
     void addData(Place *data);
     void addData(QList<Place*> places);
     Tre* searchForTre(QString);
-    QList<QString> searchForList(QString);
+    QList<Place*> searchForList(QString);
     Place* getElement(QString name);
 
 private:

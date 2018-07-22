@@ -6,6 +6,20 @@
 #include <QList>
 #include "place.h"
 
+class Worker : public QObject {
+    Q_OBJECT
+public:
+    Worker();
+    ~Worker();
+    Search *searcher;
+    QString query;
+public slots:
+    void doSearch();
+signals:
+    void finished();
+    void addItemToResultsList(QString s);
+};
+
 namespace Ui {
 class MainWindow;
 }
@@ -33,6 +47,10 @@ private slots:
     void on_kmBox_toggled(bool checked);
 
     void on_milesBox_toggled(bool checked);
+
+    void on_searchBar_textChanged(const QString &arg1);
+
+    void addItemToRList(QString s);
 
 private:
     Ui::MainWindow *ui;

@@ -27,6 +27,7 @@ QList<Place*> Extractor::getSchools(QString filepath)
         QJsonObject schoolObject = jsonArray.at(schoolCount).toObject();
         QJsonObject properties = schoolObject["properties"].toObject();
         School *school = new School();
+        school->name = properties["name"].toString();
         school->id = properties["admin_id"].toString();
         QJsonArray colourArray = properties["color"].toArray();
 

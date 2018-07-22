@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <QDebug>
 
-#define DEEP_DEBUG
 
 Tre* _addSearchableData(Tre *root, char *name, Place *data) {
     if (*name == '\0') {
@@ -14,6 +13,8 @@ Tre* _addSearchableData(Tre *root, char *name, Place *data) {
     unsigned char index = *name - (unsigned char)'a';
     if (root->next[index] == NULL) {
         root->next[index] = (Tre*)malloc(sizeof(Tre));
+        for(int i = 0; i < 26; i++)
+            root->next[index]->next[i] = NULL;
         root->next[index]->data = NULL;
     }
     return _addSearchableData(root->next[index], name + 1, data);
@@ -40,13 +41,12 @@ Tre* _searchFor(Tre *root, char *name) {
     return _searchFor(root->next[index], name + 1);
 }
 
-QList<QString> flattern(Tre *root) {
+QList<Place*> flattern(Tre *root) {
 #ifdef DEEP_DEBUG
-qDebug() << "Called " << __FUNCTION__
-         << "( root )";
+qDebug() << "Called " << __FUNCTION__ << "(" << (root == NULL ? "NULL" : "root") << ")";
 #endif
-    QList<QString> data;
-    if (root->data != NULL) data << root->data->name;
+    QList<Place*> data;
+    if (root->data != NULL) data << root->data;
     for(int i = 0; i < 26; i++)
         if (root->next[i] != NULL)
             data += flattern(root->next[i]);
@@ -59,9 +59,20 @@ void deleteTre(Tre *root) { //This function is savage. Don't use it unless you k
     free(root);
 }
 
+int count(Tre *root) {
+    if (root == NULL) return 0;
+    int counter = 1;
+    for(int i = 0; i < 26; i++)
+        if (root->next[i] != NULL) counter += count(root->next[i]);
+    return counter;
+}
+
 Search::Search()
 {
     searchableData = (Tre*)malloc(sizeof(Tre));
+    for (int i = 0; i < 26; i++) {
+        searchableData->next[i] = NULL;
+    }
 }
 
 Search::~Search()
@@ -83,14 +94,13 @@ void Search::addData(QList<Place*> places)
 
 Tre* Search::searchForTre(QString name)
 {
-    qDebug() << "Started Search for " << name;
     return _searchFor(searchableData, name.toLower().toLatin1().data());
 }
 
-QList<QString> Search::searchForList(QString name)
+QList<Place*> Search::searchForList(QString name)
 {
     Tre *results = searchForTre(name);
-    if (results == NULL) QList<QString>();
+    if (results == NULL) return QList<Place*>();
     return flattern(results);
 }
 
