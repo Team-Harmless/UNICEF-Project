@@ -2,6 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "search.h"
+#include <QList>
+#include "place.h"
 
 namespace Ui {
 class MainWindow;
@@ -17,6 +20,8 @@ public:
 
 private:
     void unitUpdate(double mult);
+    Search *searcher;
+    QList<Place> places;
 
 private slots:
     void on_actionImport_Schools_triggered();

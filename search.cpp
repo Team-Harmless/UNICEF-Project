@@ -5,7 +5,7 @@
 
 #define DEEP_DEBUG
 
-Tre* _addSearchableData(Tre *root, char *name, Data *data) {
+Tre* _addSearchableData(Tre *root, char *name, Place *data) {
     if (*name == '\0') {
         root->data = data;
         return root;
@@ -19,7 +19,7 @@ Tre* _addSearchableData(Tre *root, char *name, Data *data) {
     return _addSearchableData(root->next[index], name + 1, data);
 }
 
-Tre* addSearchableData(Tre *root, char *name, Data *data) {
+Tre* addSearchableData(Tre *root, char *name, Place *data) {
     int length = strlen(name);
     int i = 0; while (name[i] != ' ' && i < length) i++;
     if (name[i] == ' ') addSearchableData(root, name + i + 1, data); //seporates by space (kinda).
@@ -46,7 +46,7 @@ qDebug() << "Called " << __FUNCTION__
          << "( root )";
 #endif
     QList<QString> data;
-    if (root->data != NULL) data << *root->data->name;
+    if (root->data != NULL) data << root->data->name;
     for(int i = 0; i < 26; i++)
         if (root->next[i] != NULL)
             data += flattern(root->next[i]);
@@ -56,8 +56,6 @@ qDebug() << "Called " << __FUNCTION__
 void deleteTre(Tre *root) { //This function is savage. Don't use it unless you know no subtrees are needed.
     for(int i = 0; i < 26; i++)
         if (root->next[i] != NULL) deleteTre(root->next[i]);
-    free(root->data->data);
-    free(root->data);
     free(root);
 }
 
@@ -71,9 +69,9 @@ Search::~Search()
     deleteTre(searchableData);
 }
 
-void Search::addData(Data *data)
+void Search::addData(Place *data)
 {
-    addSearchableData(searchableData, data->name->toLower().toLatin1().data(), data);
+    addSearchableData(searchableData, data->name.toLower().toLatin1().data(), data);
 }
 
 Tre* Search::searchForTre(QString name)
@@ -89,9 +87,9 @@ QList<QString> Search::searchForList(QString name)
     return flattern(results);
 }
 
-Data* Search::getElement(QString name)
+Place* Search::getElement(QString name)
 {
     Tre *ret = _searchFor(searchableData, name.toLower().toLatin1().data());
     if (ret == NULL) return NULL;
-    return (Data*)ret;
+    return (Place*)ret;
 }

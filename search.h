@@ -2,19 +2,16 @@
 #define SEARCH_H
 #include <QString>
 #include <QList>
+#include "place.h"
 
 /*
  * Assumtions:
  * Both Data and Data->data are heap allocated
 */
 
-struct Data {
-    QString *name;
-    void *data;
-};
 
 struct Tre {
-    Data *data;
+    Place *data;
     struct Tre *next[26];
 };
 
@@ -23,10 +20,10 @@ class Search
 public:
     Search();
     ~Search();
-    void addData(Data *data);
+    void addData(Place *data);
     Tre* searchForTre(QString);
     QList<QString> searchForList(QString);
-    Data* getElement(QString name);
+    Place* getElement(QString name);
 
 private:
 

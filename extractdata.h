@@ -4,8 +4,9 @@
 #endif // EXTARCTDATA_H
 
 #include <QList>
-#include <school.h>
-#include <healthfacility.h>
-
-QList<School> getSchools(QString filepath);
-QList<HealthFacility> getHealthFacilities(QString filepath);
+#include "place.h"
+class Extractor {
+public:
+    static QList<Place*> getSchools(QString filepath);
+    static QList<Place*> getHealthFacilities(QString filepath);
+};
