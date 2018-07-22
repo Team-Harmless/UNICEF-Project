@@ -4,6 +4,7 @@
 #include <QDebug>
 
 
+
 Tre* _addSearchableData(Tre *root, char *name, Place *data) {
     if (*name == '\0') {
         root->data = data;

@@ -4,9 +4,11 @@
 #include <QStandardPaths>
 #include <QDebug>
 #include "extractdata.h"
+#include "healthfacility.h"
 #include <QThread>
 
 double distanceMultiplier = 1;
+QThread *searchThread = NULL;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -33,6 +35,7 @@ void MainWindow::on_actionImport_Schools_triggered() //Gets full path to file
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Schools File"), documentsLocation, tr("JSON Files (*.json)"));
     if (fileName != "") {
         QList<Place*> schools = Extractor::getSchools(fileName);
+        qDebug() << "Imported" << schools.count() << "schools";
         searcher->addData(schools);
         places += schools;
         ui->actionImport_Schools->setEnabled(false);
@@ -67,7 +70,9 @@ void MainWindow::on_milesBox_toggled(bool checked) { if (checked) unitUpdate(0.6
 
 void MainWindow::on_searchBar_textChanged(const QString &arg1)
 {
+    if (searchThread != NULL) searchThread->blockSignals(true);
     ui->resultsList->clear();
+    displyedPlaces.clear();
     if (arg1 == "") return;
     QThread *t = new QThread();
     Worker *w = new Worker();
@@ -75,17 +80,47 @@ void MainWindow::on_searchBar_textChanged(const QString &arg1)
     w->query = arg1;
     w->moveToThread(t);
     connect(w, SIGNAL(finished()), t, SLOT(quit()));
+    connect(w, SIGNAL(finished()), this, SLOT(displayResults()));
     connect(w, SIGNAL(finished()), w, SLOT(deleteLater()));
     connect(t, SIGNAL(finished()), t, SLOT(deleteLater()));
     connect(t, SIGNAL(started()), w, SLOT(doSearch()));
-    connect(w, SIGNAL(addItemToResultsList(QString)), this, SLOT(addItemToRList(QString)));
+    connect(w, SIGNAL(addItemToResultsList(Place*)), this, SLOT(addItemToRList(Place*)));
     t->start();
+    searchThread = t;
 
 }
 
-void MainWindow::addItemToRList(QString s)
+QList<Place*> MainWindow::applyFilter(QList<Place*> places) {
+    QList<Place*> ret = places;
+    if (!ui->schoolsBox->isChecked())
+        for(int i = ret.count() -1; i >= 0; i--)
+            if (ret.at(i)->classType == Place::Schl) ret.removeAt(i);
+    if (!ui->healthFacilitiesBox->isChecked())
+        for(int i = ret.count() -1; i >= 0; i--)
+            if (ret.at(i)->classType == Place::HlthFac) ret.removeAt(i);
+    if (!ui->clinicsBox->isChecked())
+        for(int i = ret.count() -1; i >= 0; i--)
+            if (ret.at(i)->classType == Place::HlthFac &&
+                    ((HealthFacility*)ret.at(i))->type.toLower() == "clinic") ret.removeAt(i);
+    if (!ui->hospitalsBox->isChecked())
+        for(int i = ret.count() -1; i >= 0; i--)
+            if (ret.at(i)->classType == Place::HlthFac &&
+                    ((HealthFacility*)ret.at(i))->type.toLower() == "hospital") ret.removeAt(i);
+    return ret;
+}
+
+void MainWindow::addItemToRList(Place* s)
 {
-    ui->resultsList->addItem(s);
+    searchThread = NULL;
+    displyedPlaces << s;
+}
+
+void MainWindow::displayResults()
+{
+    ui->resultsList->clear();
+    QList<Place*> dis = applyFilter(displyedPlaces);
+    foreach(Place *pl, dis)
+        ui->resultsList->addItem(pl->name);
 }
 
 
@@ -102,11 +137,27 @@ Worker::~Worker()
 void Worker::doSearch()
 {
     QList<Place*> results = searcher->searchForList(query);
-    int i = 0;
-    foreach(Place *pl, results) {
-        if (i > 50) break;
-        i++;
-        emit(addItemToResultsList(pl->name));
-    }
+    foreach(Place *pl, results)
+        emit(addItemToResultsList(pl));
     emit(finished());
+}
+
+void MainWindow::on_schoolsBox_toggled(bool)
+{
+    displayResults();
+}
+
+void MainWindow::on_healthFacilitiesBox_toggled(bool)
+{
+    displayResults();
+}
+
+void MainWindow::on_hospitalsBox_toggled(bool)
+{
+    displayResults();
+}
+
+void MainWindow::on_clinicsBox_toggled(bool)
+{
+    displayResults();
 }

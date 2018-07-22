@@ -27,6 +27,7 @@ QList<Place*> Extractor::getSchools(QString filepath)
         QJsonObject schoolObject = jsonArray.at(schoolCount).toObject();
         QJsonObject properties = schoolObject["properties"].toObject();
         School *school = new School();
+        school->classType = Place::Schl;
         school->name = properties["name"].toString();
         school->id = properties["admin_id"].toString();
         QJsonArray colourArray = properties["color"].toArray();
@@ -61,6 +62,7 @@ QList<Place*> Extractor::getHealthFacilities(QString filepath)
         QJsonObject healthFacilityObject = jsonArray.at(healthFacilityCount).toObject();
         QJsonObject properties = healthFacilityObject["properties"].toObject();
         HealthFacility *healthFacility = new HealthFacility();
+        healthFacility->classType = Place::HlthFac;
         healthFacility->id = properties["uuid"].toString();
         healthFacility->name = properties["name"].toString();
         healthFacility->type = properties["type"].toString();
