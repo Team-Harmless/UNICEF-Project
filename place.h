@@ -2,6 +2,7 @@
 #define PLACE_H
 
 #include <QString>
+#include <QGeoCoordinate>
 
 class Place
 {
@@ -14,8 +15,7 @@ public:
     Place();
     QString name;
     QString id;
-    double xCoordinate;
-    double yCoordinate;
+    QGeoCoordinate coord;
 };
 
 #endif // PLACE_H

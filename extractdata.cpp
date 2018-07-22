@@ -37,8 +37,8 @@ QList<Place*> Extractor::getSchools(QString filepath)
 
         QJsonObject geometry = schoolObject["geometry"].toObject();
         QJsonArray  coordinates = geometry["coordinates"].toArray();
-        school->xCoordinate = coordinates.takeAt(0).toDouble();
-        school->yCoordinate = coordinates.takeAt(1).toDouble();
+        school->coord.setLongitude(coordinates.takeAt(0).toDouble());
+        school->coord.setLatitude(coordinates.takeAt(1).toDouble());
         ret << school;
     }
     return ret;
@@ -75,8 +75,8 @@ QList<Place*> Extractor::getHealthFacilities(QString filepath)
         healthFacility->what3words = properties["what3words"].toString();
         QJsonObject geometry = properties["geometry"].toObject();
         QJsonArray  coordinates  = properties["geometry"].toArray();
-        healthFacility->xCoordinate = coordinates.at(0).toDouble();
-        healthFacility->yCoordinate = coordinates.at(1).toDouble();
+        healthFacility->coord.setLongitude(coordinates.at(0).toDouble());
+        healthFacility->coord.setLatitude(coordinates.at(1).toDouble());
         ret << healthFacility;
     }
     return ret;
