@@ -1,13 +1,14 @@
 #include <iostream>
 #include <cmath>
+#include "place.h"
 using namespace std;
  
 // Used to hold details of a point
 struct Point
 {
-    int x;
-    int y;
-    Point(int _x, int _y)
+    double x;
+    double y;
+    Point(double _x, double _y)
     {
         x = _x;
         y = _y;
@@ -23,15 +24,17 @@ struct Point
 struct Node
 {
     Point pos;
-    int data;
-    Node(Point _pos, int _data)
+    Place * place;
+    Node(Place * givenPlace)
     {
-        pos = _pos;
-        data = _data;
+        double x = givenPlace->xCoordinate;
+        double y = givenPlace->yCoordinate;
+        pos = Point(x,y);
+        place = givenPlace;
     }
     Node()
     {
-        data = 0;
+        place = nullptr;
     }
 };
  
@@ -56,19 +59,19 @@ public:
     {
         topLeft = Point(0, 0);
         botRight = Point(0, 0);
-        n = NULL;
-        topLeftTree  = NULL;
-        topRightTree = NULL;
-        botLeftTree  = NULL;
-        botRightTree = NULL;
+        n = nullptr;
+        topLeftTree  = nullptr;
+        topRightTree = nullptr;
+        botLeftTree  = nullptr;
+        botRightTree = nullptr;
     }
     Quad(Point topL, Point botR)
     {
-        n = NULL;
-        topLeftTree  = NULL;
-        topRightTree = NULL;
-        botLeftTree  = NULL;
-        botRightTree = NULL;
+        n = nullptr;
+        topLeftTree  = nullptr;
+        topRightTree = nullptr;
+        botLeftTree  = nullptr;
+        botRightTree = nullptr;
         topLeft = topL;
         botRight = botR;
     }
@@ -80,7 +83,7 @@ public:
 // Insert a node into the quadtree
 void Quad::insert(Node *node)
 {
-    if (node == NULL)
+    if (node == nullptr)
         return;
  
     // Current quad cannot contain it
@@ -92,7 +95,7 @@ void Quad::insert(Node *node)
     if (abs(topLeft.x - botRight.x) <= 1 &&
         abs(topLeft.y - botRight.y) <= 1)
     {
-        if (n == NULL)
+        if (n == nullptr)
             n = node;
         return;
     }
@@ -102,7 +105,7 @@ void Quad::insert(Node *node)
         // Indicates topLeftTree
         if ((topLeft.y + botRight.y) / 2 >= node->pos.y)
         {
-            if (topLeftTree == NULL)
+            if (topLeftTree == nullptr)
                 topLeftTree = new Quad(
                     Point(topLeft.x, topLeft.y),
                     Point((topLeft.x + botRight.x) / 2,
@@ -113,7 +116,7 @@ void Quad::insert(Node *node)
         // Indicates botLeftTree
         else
         {
-            if (botLeftTree == NULL)
+            if (botLeftTree == nullptr)
                 botLeftTree = new Quad(
                     Point(topLeft.x,
                         (topLeft.y + botRight.y) / 2),
@@ -127,7 +130,7 @@ void Quad::insert(Node *node)
         // Indicates topRightTree
         if ((topLeft.y + botRight.y) / 2 >= node->pos.y)
         {
-            if (topRightTree == NULL)
+            if (topRightTree == nullptr)
                 topRightTree = new Quad(
                     Point((topLeft.x + botRight.x) / 2,
                         topLeft.y),
@@ -139,7 +142,7 @@ void Quad::insert(Node *node)
         // Indicates botRightTree
         else
         {
-            if (botRightTree == NULL)
+            if (botRightTree == nullptr)
                 botRightTree = new Quad(
                     Point((topLeft.x + botRight.x) / 2,
                         (topLeft.y + botRight.y) / 2),
@@ -154,11 +157,11 @@ Node* Quad::search(Point p)
 {
     // Current quad cannot contain it
     if (!inBoundary(p))
-        return NULL;
+        return nullptr;
  
     // We are at a quad of unit length
     // We cannot subdivide this quad further
-    if (n != NULL)
+    if (n != nullptr)
         return n;
  
     if ((topLeft.x + botRight.x) / 2 >= p.x)
@@ -166,16 +169,16 @@ Node* Quad::search(Point p)
         // Indicates topLeftTree
         if ((topLeft.y + botRight.y) / 2 >= p.y)
         {
-            if (topLeftTree == NULL)
-                return NULL;
+            if (topLeftTree == nullptr)
+                return nullptr;
             return topLeftTree->search(p);
         }
  
         // Indicates botLeftTree
         else
         {
-            if (botLeftTree == NULL)
-                return NULL;
+            if (botLeftTree == nullptr)
+                return nullptr;
             return botLeftTree->search(p);
         }
     }
@@ -184,16 +187,16 @@ Node* Quad::search(Point p)
         // Indicates topRightTree
         if ((topLeft.y + botRight.y) / 2 >= p.y)
         {
-            if (topRightTree == NULL)
-                return NULL;
+            if (topRightTree == nullptr)
+                return nullptr;
             return topRightTree->search(p);
         }
  
         // Indicates botRightTree
         else
         {
-            if (botRightTree == NULL)
-                return NULL;
+            if (botRightTree == nullptr)
+                return nullptr;
             return botRightTree->search(p);
         }
     }
@@ -209,7 +212,7 @@ bool Quad::inBoundary(Point p)
 }
  
 // Driver program
-int main()
+/*int main()
 {
     Quad center(Point(0, 0), Point(8, 8));
     Node a(Point(1, 1), 1);
@@ -227,4 +230,4 @@ int main()
     cout << "Non-existing node: "
         << center.search(Point(5, 5));
     return 0;
-}
+}*/
