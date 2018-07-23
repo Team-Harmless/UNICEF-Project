@@ -32,7 +32,8 @@ SOURCES += \
         school.cpp \
         healthfacility.cpp \
         search.cpp \
-    comparisons.cpp
+        comparisons.cpp \
+        quaddTree.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -41,7 +42,10 @@ HEADERS += \
         school.h \
         healthfacility.h \
         search.h \
-    comparisons.h
+        comparisons.h \
+        quadtree.h
 
 FORMS += \
         mainwindow.ui
+
+QMAKE_CXXFLAGS += -std=c++0x
