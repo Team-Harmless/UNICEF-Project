@@ -38,7 +38,7 @@ QList<Place*> Extractor::getSchools(QString filepath)
         QJsonObject geometry = schoolObject["geometry"].toObject();
         QJsonArray  coordinates = geometry["coordinates"].toArray();
         school->coord.setLongitude(coordinates.takeAt(0).toDouble());
-        school->coord.setLatitude(coordinates.takeAt(1).toDouble());
+        school->coord.setLatitude(coordinates.takeAt(0).toDouble());
         ret << school;
     }
     return ret;
