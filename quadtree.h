@@ -3,6 +3,7 @@
 
 #include <QGeoCoordinate>
 #include <QSet>
+#include <QPair>
 
 
 #include <iostream>
@@ -42,6 +43,10 @@ public:
     static bool inBoundary (QGeoCoordinate givenPoint
         , QGeoCoordinate bottomLeftPoint, QGeoCoordinate topRightPoint);
     bool inBoundary(QGeoCoordinate givenPoint);
+    bool isOutsideTopRight(QGeoCoordinate givenPoint);
+    bool isOutsideBottomLeft(QGeoCoordinate givenPoint);
+    QPair<QGeoCoordinate, QGeoCoordinate> adjustSearchBoundaries(
+            QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight);
 
 };
 

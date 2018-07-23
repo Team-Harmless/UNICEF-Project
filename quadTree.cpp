@@ -107,6 +107,9 @@ Quad::Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight
 QSet<Place *> Quad::search(QGeoCoordinate givenBottomLeft
                            , QGeoCoordinate givenTopRight)
 {
+    QSet<Place*> foundPlaces;
+
+    // Base case.
     if (height == 0)
     {
         QSet<Place*> foundPlaces;
@@ -116,70 +119,63 @@ QSet<Place *> Quad::search(QGeoCoordinate givenBottomLeft
         return foundPlaces;
     } // if
 
-    // First cut list to match size.
-    if(givenBottomLeft.longitude() < bottomLeftPoint.longitude()
-            || givenBottomLeft.latitude() < bottomLeftPoint.latitude())
+    // Step case.
+
+    // For each subtree adjust search boundaries to match its size
+    // and invoke search on it
+    QPair<QGeoCoordinate, QGeoCoordinate> topLeftCoordinates
+            = adjustSearchBoundaries(givenBottomLeft, givenTopRight);
+    foundPlaces = topLeftTree->
+            search(topLeftCoordinates.first, topLeftCoordinates.second);
+
+    QPair<QGeoCoordinate, QGeoCoordinate> topRightCoordinates
+            = adjustSearchBoundaries(givenBottomLeft, givenTopRight);
+    foundPlaces.unite(topRightTree->search(topRightCoordinates.first
+                                           , topRightCoordinates.second));
+
+    QPair<QGeoCoordinate, QGeoCoordinate> bottomLeftCoordinates
+            = adjustSearchBoundaries(givenBottomLeft, givenTopRight);
+    foundPlaces.unite(bottomLeftTree->search(bottomLeftCoordinates.first
+                                             , bottomLeftCoordinates.second));
+
+    QPair<QGeoCoordinate, QGeoCoordinate> bottomRightCoordinates
+            = adjustSearchBoundaries(givenBottomLeft, givenTopRight);
+    foundPlaces.unite(bottomRightTree->search(bottomRightCoordinates.first
+                                              , bottomRightCoordinates.second));
+
+    return foundPlaces;
+} // search
+
+QPair<QGeoCoordinate, QGeoCoordinate> Quad::adjustSearchBoundaries(
+        QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight)
+{
+    if (isOutsideBottomLeft(givenBottomLeft))
         givenBottomLeft = bottomLeftPoint;
-    if(givenTopRight.longitude() > topRightPoint.longitude()
-            || givenTopRight.latitude() > givenTopRight.latitude())
-        givenBottomLeft = bottomLeftPoint;
+    if(isOutsideTopRight(givenTopRight))
+        givenTopRight = topRightPoint;
+
+    return QPair<QGeoCoordinate, QGeoCoordinate> (givenBottomLeft
+                                                  , givenTopRight);
 }
 
-// Find a node in a quadtree
-Node* Quad::search(QGeoCoordinate p)
-{
-    // Current quad cannot contain it
-    if (!inBoundary(p))
-        return nullptr;
- 
-    // We are at a quad of unit length
-    // We cannot subdivide this quad further
-    if (nodePtr!= nullptr)
-        return n;
- 
-    if ((topRight.latitude() + bottomLeftPoint.latitude()) / 2 >= p.latitude())
-    {
-        // Indicates topLeftTree
-        if ((topRight.longitude() + bottomLeftPoint.longitude()) / 2 >= p.longitude())
-        {
-            if (topLeftTree == nullptr)
-                return nullptr;
-            return topLeftTree->search(p);
-        }
- 
-        // Indicates botLeftTree
-        else
-        {
-            if (botLeftTree == nullptr)
-                return nullptr;
-            return botLeftTree->search(p);
-        }
-    }
-    else
-    {
-        // Indicates topRightTree
-        if ((topRight.longitude() + bottomLeftPoint.longitude()) / 2 >= p.longitude())
-        {
-            if (topRightTree == nullptr)
-                return nullptr;
-            return topRightTree->search(p);
-        }
- 
-        // Indicates botRightTree
-        else
-        {
-            if (botRightTree == nullptr)
-                return nullptr;
-            return botRightTree->search(p);
-        }
-    }
-};
- 
+
 // Check if current quadtree contains the point
 bool Quad::inBoundary(QGeoCoordinate givenPoint)
 {
     return inBoundary(givenPoint, bottomLeftPoint, topRightPoint);
 } // non-static inBoundary
+
+bool Quad::isOutsideTopRight(QGeoCoordinate givenPoint)
+{
+    return givenPoint.longitude() > topRightPoint.longitude()
+            || givenPoint.latitude() > topRightPoint.latitude();
+}
+
+bool Quad::isOutsideBottomLeft(QGeoCoordinate givenPoint)
+{
+    return givenPoint.longitude() < bottomLeftPoint.longitude()
+            || givenPoint.latitude() < bottomLeftPoint.latitude();
+}
  
 bool Quad::inBoundary(QGeoCoordinate givenPoint, QGeoCoordinate bottomLeftPoint
                       , QGeoCoordinate topRightPoint)
