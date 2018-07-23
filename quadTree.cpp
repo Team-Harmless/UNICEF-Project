@@ -3,7 +3,7 @@
 
 /*Quad Quad::createUsingQlist()
 {
-    QList<Place *> schoolsList = Extractor::getSchools("schools.json");
+    QSet<Place *> schoolsList = Extractor::getSchools("schools.json");
 
     // actually bottomleft
     QGeoCoordinate topRightPoint = QGeoCoordinate(schoolsList[0]->xCoordinate, schoolsList[0]->yCoordinate);
@@ -40,25 +40,11 @@
     return quadPlaces;
 }*/
 
-Node::Node(QGeoCoordinate givenPosistion, QList<Place*> givenPlaces)
-{
-    position = givenPosistion;
-    places = givenPlaces;
-}
-
-
-Node:: Node()
-{
-    position = QGeoCoordinate(0,0);
-    places = QList<Place*>();
-}
-
-
 Quad::Quad()
 {
     topRightPoint= QGeoCoordinate(0, 0);
     bottomLeftPoint = QGeoCoordinate(0, 0);
-    nodePtr = nullptr;
+    heldPlacesPtr = nullptr;
     topLeftTree  = nullptr;
     topRightTree = nullptr;
     bottomLeftTree  = nullptr;
@@ -66,7 +52,7 @@ Quad::Quad()
 }
 
 Quad::Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight
-           , int givenHeight, QList<Place *> givenPlaces)
+           , int givenHeight, QSet<Place *> givenPlaces)
 {
     heldPlacesPtr = nullptr;
     bottomLeftPoint = givenBottomLeft;
@@ -81,11 +67,11 @@ Quad::Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight
         bottomLeftTree = nullptr;
         bottomRightTree = nullptr;
 
-        heldPlacesPtr = new QList<Place *>();
+        heldPlacesPtr = new QSet<Place *>();
 
         foreach (Place * placePtr, givenPlaces)
             if (inBoundary(placePtr->coordinate))
-                heldPlacesPtr->append(placePtr);
+                heldPlacesPtr->insert(placePtr);
        return;
     } // if
 
@@ -118,78 +104,27 @@ Quad::Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight
             (bottomMidPoint, rightMidPoint, givenHeight - 1, givenPlaces);
 }
 
-// Insert a node into the quadtree
-void Quad::insert(Node *node)
+QSet<Place *> Quad::search(QGeoCoordinate givenBottomLeft
+                           , QGeoCoordinate givenTopRight)
 {
-    if (node == nullptr)
-        return;
- 
-    // Current quad cannot contain it
-    if (!inBoundary(node->position))
-        return;
- 
-    // We are at a quad of unit area
-    // We cannot subdivide this quad further
-    if (abs(topRightPoint.latitude() - bottomLeftPoint.latitude()) <= 1 &&
-        abs(topRightPoint.longitude() - bottomLeftPoint.longitude()) <= 1)
+    if (height == 0)
     {
-        if (nodePtr== nullptr)
-            nodePtr= node;
-        return;
-    }
- 
-    if ((topRightPoint.latitude() + bottomLeftPoint.latitude()) / 2 >= node->position.latitude())
-    {
-        // Indicates topLeftTree
-        if ((topRightPoint.longitude() + bottomLeftPoint.longitude()) / 2 >= node->position.longitude())
-        {
-            if (topLeftTree == nullptr)
-                topLeftTree = new Quad(
-                    QGeoCoordinate(topRightPoint.latitude(), topRightPoint.longitude()),
-                    QGeoCoordinate((topRightPoint.latitude() + bottomLeftPoint.latitude()) / 2,
-                        (topRightPoint.longitude() + bottomLeftPoint.longitude()) / 2));
-            topLeftTree->insert(node);
-        }
- 
-        // Indicates botLeftTree
-        else
-        {
-            if (botLeftTree == nullptr)
-                botLeftTree = new Quad(
-                    QGeoCoordinate(topRightPoint.latitude(),
-                        (topRightPoint.longitude() + bottomLeftPoint.longitude()) / 2),
-                    QGeoCoordinate((topRightPoint.latitude() + bottomLeftPoint.latitude()) / 2,
-                        bottomLeftPoint.longitude()));
-            botLeftTree->insert(node);
-        }
-    }
-    else
-    {
-        // Indicates topRightTree
-        if ((topRightPoint.longitude() + bottomLeftPoint.longitude()) / 2 >= node->position.longitude())
-        {
-            if (topRightPointTree == nullptr)
-                topRightPointTree = new Quad(
-                    QGeoCoordinate((topRightPoint.latitude() + bottomLeftPoint.latitude()) / 2,
-                        topRightPoint.longitude()),
-                    QGeoCoordinate(bottomLeftPoint.latitude(),
-                        (topRight.longitude() + bottomLeftPoint.longitude()) / 2));
-            topRightTree->insert(node);
-        }
- 
-        // Indicates botRightTree
-        else
-        {
-            if (botRightTree == nullptr)
-                botRightTree = new Quad(
-                    QGeoCoordinate((topRight.latitude() + bottomLeftPoint.latitude()) / 2,
-                        (topRight.longitude() + bottomLeftPoint.longitude()) / 2),
-                    QGeoCoordinate(bottomLeftPoint.latitude(), bottomLeftPoint.longitude()));
-            botRightTree->insert(node);
-        }
-    }
+        QSet<Place*> foundPlaces;
+        foreach (Place * placePtr, heldPlacesPtr)
+            if (inBoundary(placePtr->coordinate))
+                foundPlaces.insert(placePtr);
+        return foundPlaces;
+    } // if
+
+    // First cut list to match size.
+    if(givenBottomLeft.longitude() < bottomLeftPoint.longitude()
+            || givenBottomLeft.latitude() < bottomLeftPoint.latitude())
+        givenBottomLeft = bottomLeftPoint;
+    if(givenTopRight.longitude() > topRightPoint.longitude()
+            || givenTopRight.latitude() > givenTopRight.latitude())
+        givenBottomLeft = bottomLeftPoint;
 }
- 
+
 // Find a node in a quadtree
 Node* Quad::search(QGeoCoordinate p)
 {
@@ -243,21 +178,26 @@ Node* Quad::search(QGeoCoordinate p)
 // Check if current quadtree contains the point
 bool Quad::inBoundary(QGeoCoordinate givenPoint)
 {
-    // Is the point "after" the bottom left corner and "before"
-    // the top right corner (or on the edge of the map)? 
+    return inBoundary(givenPoint, bottomLeftPoint, topRightPoint);
+} // non-static inBoundary
+ 
+bool Quad::inBoundary(QGeoCoordinate givenPoint, QGeoCoordinate bottomLeftPoint
+                      , QGeoCoordinate topRightPoint)
+{
     return (givenPoint.longitude() >= bottomLeftPoint.longitude()
         && givenPoint.latitude() >= bottomLeftPoint.latitude()
         && givenPoint.longitude() <= topRightPoint.longitude()
         && givenPoint.latitude() <= topRightPoint.latitude());
-}
- 
+} // static inBoundary
+
 QGeoCoordinate Quad::findMidPoint(QGeoCoordinate firstPoint
     , QGeoCoordinate secondPoint)
 {
   // MidPoint( (x1 + x2) / 2, (y1 + y2) / 2 )
   return QGeoCoordinate((firstPoint.longitude() + secondPoint.longitude()) / 2
-      , (firstPoint.latitude() + secondPoint.latitude()) / 2);
+                        , (firstPoint.latitude() + secondPoint.latitude()) / 2);
 } // findMidPoint
+
 
 // Driver program
 /*int main()
