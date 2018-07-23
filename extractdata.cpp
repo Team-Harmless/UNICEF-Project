@@ -6,8 +6,10 @@
 #include <QDebug>
 #include <QString>
 #include "extractdata.h"
+#include "school.h"
+#include "healthfacility.h"
 
-QList<School> getSchools(QString filepath)
+QList<Place*> Extractor::getSchools(QString filepath)
 {
     QFile sourceFile;
     sourceFile.setFileName(filepath);
@@ -19,28 +21,32 @@ QList<School> getSchools(QString filepath)
     QJsonArray jsonArray = sourceAsJson["features"].toArray();
 
     //*arraySize = jsonArray.size(); keeping because gonna change to qvector //TODO
-    QList<School> ret;
+    QList<Place*> ret;
     for (int schoolCount = 0; schoolCount < jsonArray.size(); schoolCount++)
     {
         QJsonObject schoolObject = jsonArray.at(schoolCount).toObject();
         QJsonObject properties = schoolObject["properties"].toObject();
-        struct School school;
-        school.id = properties["admin_id"].toString();
+        School *school = new School();
+        school->classType = Place::Schl;
+        school->name = properties["name"].toString();
+        school->id = properties["admin_id"].toString();
         QJsonArray colourArray = properties["color"].toArray();
 
         for (int index = 0; index < colourArray.size(); index++)
-            school.colour[index] = colourArray.at(index).toInt();
+            school->colour[index] = colourArray.at(index).toInt();
 
         QJsonObject geometry = schoolObject["geometry"].toObject();
         QJsonArray  coordinates = geometry["coordinates"].toArray();
-        school.xCoordinate = coordinates.takeAt(0).toDouble();
-        school.yCoordinate = coordinates.takeAt(1).toDouble();
+        // Latitude is y and is first in file.
+        school->coord.setLatitude(coordinates.takeAt(0).toDouble());
+        // Longtitude is x and is second in file.
+        school->coord.setLongitude(coordinates.takeAt(0).toDouble());
         ret << school;
     }
     return ret;
 } 
 
-QList<HealthFacility> getHealthFacilities(QString filepath)
+QList<Place*> Extractor::getHealthFacilities(QString filepath)
 {
     QFile sourceFile;
     sourceFile.setFileName(filepath);
@@ -52,26 +58,29 @@ QList<HealthFacility> getHealthFacilities(QString filepath)
     QJsonArray jsonArray = sourceAsJson["features"].toArray();
 
     //*arraySize = jsonArray.size(); keeping becuase gonna change to qvector //TODO
-    QList<HealthFacility> ret;
+    QList<Place*> ret;
     for (int healthFacilityCount = 0; healthFacilityCount < jsonArray.size(); healthFacilityCount++)
     {
         QJsonObject healthFacilityObject = jsonArray.at(healthFacilityCount).toObject();
         QJsonObject properties = healthFacilityObject["properties"].toObject();
-        struct HealthFacility healthFacility;
-        healthFacility.id = properties["uuid"].toString();
-        healthFacility.name = properties["name"].toString();
-        healthFacility.type = properties["type"].toString();
-        healthFacility.dateModified = properties["date_modified"].toString();
-        healthFacility.sourceURL = properties["source_url"].toString();
-        healthFacility.source = properties["source"].toString();
-        healthFacility.completeness = properties["completeness"].toString();
-        healthFacility.version = properties["version"].toString();
-        healthFacility.upstream = properties["upstream"].toString();
-        healthFacility.what3words = properties["what3words"].toString();
+        HealthFacility *healthFacility = new HealthFacility();
+        healthFacility->classType = Place::HlthFac;
+        healthFacility->id = properties["uuid"].toString();
+        healthFacility->name = properties["name"].toString();
+        healthFacility->type = properties["type"].toString();
+        healthFacility->dateModified = properties["date_modified"].toString();
+        healthFacility->sourceURL = properties["source_url"].toString();
+        healthFacility->source = properties["source"].toString();
+        healthFacility->completeness = properties["completeness"].toString();
+        healthFacility->version = properties["version"].toString();
+        healthFacility->upstream = properties["upstream"].toString();
+        healthFacility->what3words = properties["what3words"].toString();
         QJsonObject geometry = properties["geometry"].toObject();
         QJsonArray  coordinates  = properties["geometry"].toArray();
-        healthFacility.xCoordinate = coordinates.at(0).toDouble();
-        healthFacility.yCoordinate = coordinates.at(1).toDouble();
+        // Latitude is y and is first in file.
+        healthFacility->coord.setLatitude(coordinates.at(0).toDouble());
+        // Longtitude is x and is second in file.
+        healthFacility->coord.setLongitude(coordinates.at(0).toDouble());
         ret << healthFacility;
     }
     return ret;
