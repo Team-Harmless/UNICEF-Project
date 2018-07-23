@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
+    /*
     qDebug() << QDir::current();
 
     Quad placesQuad = Quad::createUsingQlist();
@@ -17,7 +18,6 @@ int main(int argc, char *argv[])
 
     QList<Place *> schoolsList = Extractor::getSchools("schools.json");
 
-    /*
     Node b(schoolsList[0]);
 
     Quad oneLocationQuad(Point(-100,-100), Point(100,100));
