@@ -15,8 +15,8 @@ int main(int argc, char *argv[])
     QList<Place *> schoolsList = Extractor::getSchools("schools.json");
 
     Place * firstSchool  = schoolsList.takeAt(0);
-    double minLongtitude = firstSchool->coord.longitude();
-    double maxLongtitude = firstSchool->coord.longitude();
+    double minLongitude = firstSchool->coord.longitude();
+    double maxLongitude = firstSchool->coord.longitude();
     double minLatitude = firstSchool->coord.latitude();
     double maxLatitude = firstSchool->coord.latitude();
 
@@ -24,19 +24,18 @@ int main(int argc, char *argv[])
     qDebug() << "first x is" << firstSchool->coord.latitude() <<endl;
     foreach (Place* schoolPointer, schoolsList)
     {
-        qDebug() << "x is" << schoolPointer->coord.latitude()<< endl;
-        if (minLongtitude < schoolPointer->coord.longitude())
-            minLongtitude = schoolPointer->coord.longitude();
-        if (maxLongtitude > schoolPointer->coord.longitude())
-            maxLongtitude = schoolPointer->coord.longitude();
-        if (minLatitude < schoolPointer->coord.latitude())
+        if (minLongitude > schoolPointer->coord.longitude())
+            minLongitude = schoolPointer->coord.longitude();
+        else if (maxLongitude < schoolPointer->coord.longitude())
+            maxLongitude = schoolPointer->coord.longitude();
+        if (minLatitude > schoolPointer->coord.latitude())
             minLatitude = schoolPointer->coord.latitude();
-        if (maxLatitude > schoolPointer->coord.latitude())
+        else if (maxLatitude < schoolPointer->coord.latitude())
             maxLatitude = schoolPointer->coord.latitude();
     } // foreach
 
-    qDebug() << "Min and max x are " << minLongtitude << " " <<maxLongtitude<<endl;
-    qDebug() << "Min and max y are " << minLatitude << " " <<maxLatitude<<endl;
+    qDebug() << "Min and max x are " << minLongitude << " " <<maxLongitude<<endl;
+    qDebug() << "Min and max y are " << minLatitude << " " <<maxLatitude;
 
     /*
     Quad placesQuad = Quad::();
