@@ -93,6 +93,7 @@ Quad::Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight
 
         foreach (Place * placePtr, givenPlaces)
             if (inBoundary(placePtr->coord))
+                heldPlacesPtr->insert(placePtr);
        return;
     } // if
 
@@ -215,3 +216,45 @@ QGeoCoordinate Quad::findMidPoint(QGeoCoordinate firstPoint
 } // findMidPoint
 
 
+
+/*
+QList<Place *> schoolsList = Extractor::getSchools("schools.json");
+
+Place * firstSchool  = schoolsList.takeAt(0);
+double minLongitude = firstSchool->coord.longitude();
+double maxLongitude = firstSchool->coord.longitude();
+double minLatitude = firstSchool->coord.latitude();
+double maxLatitude = firstSchool->coord.latitude();
+
+foreach (Place* schoolPointer, schoolsList)
+{
+    if (minLongitude > schoolPointer->coord.longitude())
+        minLongitude = schoolPointer->coord.longitude();
+    else if (maxLongitude < schoolPointer->coord.longitude())
+        maxLongitude = schoolPointer->coord.longitude();
+    if (minLatitude > schoolPointer->coord.latitude())
+        minLatitude = schoolPointer->coord.latitude();
+    else if (maxLatitude < schoolPointer->coord.latitude())
+        maxLatitude = schoolPointer->coord.latitude();
+} // foreach
+
+QGeoCoordinate bottomLeft(minLatitude, minLongitude);
+QGeoCoordinate topRight(maxLatitude, maxLongitude);
+
+Quad *schoolsQuad = new Quad(bottomLeft, topRight, 3, schoolsList.toSet());
+
+
+QSet<Place*> results = schoolsQuad->search(QGeoCoordinate(-5, -79), QGeoCoordinate(13,0));
+
+qDebug() << results.size();
+
+int count = 0;
+foreach (Place * placePtr, results)
+    if (count >= 100)
+        break;
+    else
+    {
+        qDebug() << placePtr->name;
+        count++;
+    }
+*/
