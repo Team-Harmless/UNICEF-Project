@@ -113,7 +113,7 @@ QSet<Place *> Quad::search(QGeoCoordinate givenBottomLeft
     if (height == 0)
     {
         QSet<Place*> foundPlaces;
-        foreach (Place * placePtr, heldPlacesPtr)
+        foreach (Place *placePtr, *heldPlacesPtr)
             if (inBoundary(placePtr->coordinate))
                 foundPlaces.insert(placePtr);
         return foundPlaces;
