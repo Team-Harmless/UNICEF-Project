@@ -20,8 +20,6 @@ int main(int argc, char *argv[])
     double minLatitude = firstSchool->coord.latitude();
     double maxLatitude = firstSchool->coord.latitude();
 
-    qDebug() << "len is " << schoolsList.size();
-    qDebug() << "first x is" << firstSchool->coord.latitude() <<endl;
     foreach (Place* schoolPointer, schoolsList)
     {
         if (minLongitude > schoolPointer->coord.longitude())
@@ -34,25 +32,13 @@ int main(int argc, char *argv[])
             maxLatitude = schoolPointer->coord.latitude();
     } // foreach
 
-    qDebug() << "Min and max x are " << minLongitude << " " <<maxLongitude<<endl;
-    qDebug() << "Min and max y are " << minLatitude << " " <<maxLatitude;
+    QGeoCoordinate bottomLeft(minLatitude, minLongitude);
+    QGeoCoordinate topRight(maxLatitude, maxLongitude);
 
-    /*
-    Quad placesQuad = Quad::();
-
-    cout << "Original coordinate is" <<
-            schoolsList[0]->xCoordinate<< "\n";
-
-    cout << "node in coordinate is"
-         << b.pos.x << "\n";
+    Quad *schoolsQuad = new Quad(bottomLeft, topRight, 3, schoolsList.toSet());
 
 
-    qDebug() << "Searhing in big quad returns coordinate as " <<
-        placesQuad.search(b.pos)->pos.x << "\n";
-
-    qDebug() << "Searhing in small quad returns coordinate as " <<
-        oneLocationQuad.search(b.pos)->pos.x << "\n";
-        */
+    QSet<Place*> results = schoolsQuad->search(QGeoCoordinate(-5, -79), QGeoCoordinate(13,0));
 
     return a.exec();
 }

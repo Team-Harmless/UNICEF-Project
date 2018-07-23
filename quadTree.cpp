@@ -20,8 +20,6 @@
             bottomRightPoint = QGeoCoordinate(schoolPointer->xCoordinate, schoolPointer->yCoordinate);
     } // foreach
 
-    qDebug() << topRightPoint.x << " "<< topRightPoint.y<<endl;
-    qDebug() << bottomRightPoint.x << " "<< bottomRightPoint.y<<endl;
 
 
     Quad quadPlaces(Point(-1000, 1000), Point(1000, -1000));
@@ -33,9 +31,6 @@
     } // foreach
 
     Node b(schoolsList[0]);
-
-    qDebug() << "Searhing intenally in big quad returns coordinate as " <<
-        quadPlaces.search(b.pos)->pos.x << "\n";
 
     return quadPlaces;
 }*/
@@ -50,6 +45,29 @@ Quad::Quad()
     bottomLeftTree  = nullptr;
     bottomRightTree = nullptr;
 }
+
+/* TODO - not working
+Quad:: ~Quad()
+{
+  qDebug() << "deleting at height" << height;
+  qDebug() << bottomLeftPoint << topRightPoint;
+  if (topLeftTree)
+      delete topLeftTree;
+  if (topRightTree)
+      delete topRightTree;
+  if (bottomLeftTree)
+      delete topLeftTree;
+  if (bottomRightTree)
+      delete bottomRightTree;
+
+  qDebug() << "deleted trees at height" << height;
+  if (heldPlacesPtr)
+  {
+      qDebug() << "no null pointer for set";
+      delete heldPlacesPtr;
+  }
+  qDebug() << "deleted pointer at height" << height;
+} */
 
 Quad::Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight
            , int givenHeight, QSet<Place *> givenPlaces)
@@ -79,9 +97,9 @@ Quad::Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight
 
     // Create additional points in order to make subtrees.
     QGeoCoordinate topLeftPoint
-            (bottomLeftPoint.longitude(), topRightPoint.latitude());
+            (topRightPoint.latitude(), bottomLeftPoint.longitude());
     QGeoCoordinate bottomRightPoint
-            (topRightPoint.longitude(), bottomLeftPoint.latitude());
+            (bottomLeftPoint.latitude(), topRightPoint.longitude());
     QGeoCoordinate topMidPoint =
             findMidPoint(topLeftPoint, topRightPoint);
     QGeoCoordinate bottomMidPoint =
@@ -109,7 +127,6 @@ QSet<Place *> Quad::search(QGeoCoordinate givenBottomLeft
 {
     QSet<Place*> foundPlaces;
 
-    // Base case.
     if (height == 0)
     {
         QSet<Place*> foundPlaces;
@@ -190,8 +207,8 @@ QGeoCoordinate Quad::findMidPoint(QGeoCoordinate firstPoint
     , QGeoCoordinate secondPoint)
 {
   // MidPoint( (x1 + x2) / 2, (y1 + y2) / 2 )
-  return QGeoCoordinate((firstPoint.longitude() + secondPoint.longitude()) / 2
-                        , (firstPoint.latitude() + secondPoint.latitude()) / 2);
+  return QGeoCoordinate((firstPoint.latitude() + secondPoint.latitude()) / 2
+                        , (firstPoint.longitude() + secondPoint.longitude()) / 2);
 } // findMidPoint
 
 
