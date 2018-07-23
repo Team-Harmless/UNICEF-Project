@@ -20,6 +20,8 @@
             bottomRightPoint = QGeoCoordinate(schoolPointer->xCoordinate, schoolPointer->yCoordinate);
     } // foreach
 
+    qDebug() << topRightPoint.x << " "<< topRightPoint.y<<endl;
+    qDebug() << bottomRightPoint.x << " "<< bottomRightPoint.y<<endl;
 
 
     Quad quadPlaces(Point(-1000, 1000), Point(1000, -1000));
@@ -32,7 +34,9 @@
 
     Node b(schoolsList[0]);
 
-    return quadPlaces;
+    qDebug() << "Searhing intenally in big quad returns coordinate as " <<
+        quadPlaces.search(b.pos)->pos.x << "\n";
+
 }*/
 
 Quad::Quad()
@@ -89,7 +93,6 @@ Quad::Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight
 
         foreach (Place * placePtr, givenPlaces)
             if (inBoundary(placePtr->coord))
-                heldPlacesPtr->insert(placePtr);
        return;
     } // if
 

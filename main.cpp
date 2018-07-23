@@ -10,10 +10,10 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
+    /*
+    qDebug() << QDir::current();
 
-
-    QList<Place *> schoolsList = Extractor::getSchools("schools.json");
-
+    Quad placesQuad = Quad::createUsingQlist();
     Place * firstSchool  = schoolsList.takeAt(0);
     double minLongitude = firstSchool->coord.longitude();
     double maxLongitude = firstSchool->coord.longitude();
@@ -39,6 +39,6 @@ int main(int argc, char *argv[])
 
 
     QSet<Place*> results = schoolsQuad->search(QGeoCoordinate(-5, -79), QGeoCoordinate(13,0));
-
+    */
     return a.exec();
 }
