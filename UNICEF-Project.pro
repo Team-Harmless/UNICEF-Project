@@ -33,7 +33,7 @@ SOURCES += \
         healthfacility.cpp \
         search.cpp \
         comparisons.cpp \
-        quaddTree.cpp
+        quadTree.cpp
 
 HEADERS += \
         mainwindow.h \
