@@ -11,15 +11,6 @@
 
 using namespace std;
 
-// The objects that we want stored in the quadtree
-struct Node
-{
-    QGeoCoordinate position;
-    QList<Place*> places;
-    Node(QGeoCoordinate givenPosition, QList<Place*> places);
-    Node();
-};
-
 // The main quadtree class
 class Quad
 {
@@ -28,7 +19,7 @@ class Quad
     QGeoCoordinate topRightPoint;
 
     // Contains details of node
-    Node *nodePtr;
+    QList<Place *> *heldPlacesPtr;
 
     // Children of this tree
     Quad *topLeftTree;
