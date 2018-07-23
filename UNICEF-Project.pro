@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT       += positioning
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -30,7 +31,8 @@ SOURCES += \
         place.cpp \
         school.cpp \
         healthfacility.cpp \
-        search.cpp
+        search.cpp \
+    quadTree.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -38,7 +40,10 @@ HEADERS += \
         place.h \
         school.h \
         healthfacility.h \
-        search.h
+        search.h \
+    quadtree.h
 
 FORMS += \
         mainwindow.ui
+
+QMAKE_CXXFLAGS += -std=c++0x
