@@ -74,6 +74,8 @@ Quad::Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight, int dep
     bottomLeft = givenBottomLeft;
     topRight = givenTopRight;
     depth  = 1;
+    
+
 }
 
 // Insert a node into the quadtree
@@ -199,12 +201,14 @@ Node* Quad::search(QGeoCoordinate p)
 };
  
 // Check if current quadtree contains the point
-bool Quad::inBoundary(QGeoCoordinate p)
+bool Quad::inBoundary(QGeoCoordinate givenPoint)
 {
-    return (p.latitude() >= topRight.latitude() &&
-        p.latitude() <= bottomLeft.latitude() &&
-        p.longitude() >= topRight.longitude() &&
-        p.longitude() <= bottomLeft.longitude());
+    // Is the point "after" the bottom left corner and "before"
+    // the top right corner (or on the edge of the map)? 
+    return (givenPoint.longtitude() >= bottomLeft.longtitude()
+        && givenPoint.latitide() >= bottomLeft.latitude()
+        && givenPoint.longtidude() <= topRight.longtitude()
+        && givenPoint.latitude() <= topRight.latitude());
 }
  
 // Driver program
