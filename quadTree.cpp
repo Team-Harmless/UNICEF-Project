@@ -64,14 +64,16 @@ Quad::Quad()
     bottomLeftTree  = nullptr;
     bottomRightTree = nullptr;
 }
+
 Quad::Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight
            , int givenHeight, QList<Place *> givenPlaces)
 {
-    nodePtr = nullptr;
+    heldPlacesPtr = nullptr;
     bottomLeftPoint = givenBottomLeft;
     topRightPoint = givenTopRight;
     height = givenHeight;
 
+    // Base case - do not create new trees and populate list.
     if (height == 0)
     {
         topLeftTree = nullptr;
@@ -79,8 +81,15 @@ Quad::Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight
         bottomLeftTree = nullptr;
         bottomRightTree = nullptr;
 
-        QList<Place *> heldPlaces();
+        heldPlacesPtr = new QList<Place *>();
+
+        foreach (Place * placePtr, givenPlaces)
+            if (inBoundary(placePtr->coordinate))
+                heldPlacesPtr->append(placePtr);
+       return;
     } // if
+
+    // Step case create new trees and don't populate lists.
 
     // Create additional points in order to make subtrees.
     QGeoCoordinate topLeftPoint
