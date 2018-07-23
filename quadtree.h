@@ -24,8 +24,8 @@ struct Node
 class Quad
 {
     // Hold details of the boundary of this node
-    QGeoCoordinate bottomLeft;
-    QGeoCoordinate topRight;
+    QGeoCoordinate bottomLeftPoint;
+    QGeoCoordinate topRightPoint;
 
     // Contains details of node
     Node *nodePtr;
@@ -33,13 +33,18 @@ class Quad
     // Children of this tree
     Quad *topLeftTree;
     Quad *topRightTree;
-    Quad *botLeftTree;
-    Quad *botRightTree;
+    Quad *bottomLeftTree;
+    Quad *bottomRightTree;
+
+    // height of tree
+    int height;
 
 public:
     Quad();
     Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight, int depth, QList<Place*> givenPlaces);
     static Quad createUsingQlist();
+    static QGeoCoordinate findMidPoint(QGeoCoordinate firstPoint
+        , QGeoCoordinate secondPoint);
     void insert(Node*);
     Node* search(QGeoCoordinate);
     bool inBoundary(QGeoCoordinate);

@@ -56,26 +56,57 @@ Node:: Node()
 
 Quad::Quad()
 {
-    topRight= QGeoCoordinate(0, 0);
-    bottomLeft = QGeoCoordinate(0, 0);
+    topRightPoint= QGeoCoordinate(0, 0);
+    bottomLeftPoint = QGeoCoordinate(0, 0);
     nodePtr = nullptr;
     topLeftTree  = nullptr;
     topRightTree = nullptr;
-    botLeftTree  = nullptr;
-    botRightTree = nullptr;
+    bottomLeftTree  = nullptr;
+    bottomRightTree = nullptr;
 }
-Quad::Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight, int depth, QList<Place *> givenPlaces)
+Quad::Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight
+           , int givenHeight, QList<Place *> givenPlaces)
 {
     nodePtr = nullptr;
-    topLeftTree  = nullptr;
-    topRightTree = nullptr;
-    botLeftTree  = nullptr;
-    botRightTree = nullptr;
-    bottomLeft = givenBottomLeft;
-    topRight = givenTopRight;
-    depth  = 1;
-    
+    bottomLeftPoint = givenBottomLeft;
+    topRightPoint = givenTopRight;
+    height = givenHeight;
 
+    if (height == 0)
+    {
+        topLeftTree = nullptr;
+        topRightTree = nullptr;
+        bottomLeftTree = nullptr;
+        bottomRightTree = nullptr;
+
+        QList<Place *> heldPlaces();
+    } // if
+
+    // Create additional points in order to make subtrees.
+    QGeoCoordinate topLeftPoint
+            (bottomLeftPoint.longitude(), topRightPoint.latitude());
+    QGeoCoordinate bottomRightPoint
+            (topRightPoint.longitude(), bottomLeftPoint.latitude());
+    QGeoCoordinate topMidPoint =
+            findMidPoint(topLeftPoint, topRightPoint);
+    QGeoCoordinate bottomMidPoint =
+            findMidPoint(bottomLeftPoint, bottomRightPoint);
+    QGeoCoordinate leftMidPoint =
+            findMidPoint(bottomLeftPoint, topLeftPoint);
+    QGeoCoordinate rightMidPoint =
+            findMidPoint(bottomRightPoint, topRightPoint);
+    QGeoCoordinate centrePoint =
+            findMidPoint(leftMidPoint, rightMidPoint);
+
+    // Create subtrees.
+    topLeftTree = new Quad
+            (leftMidPoint, topMidPoint, givenHeight - 1, givenPlaces);
+    topRightTree = new Quad
+            (centrePoint, topRightPoint, givenHeight - 1, givenPlaces);
+    bottomLeftTree = new Quad
+            (bottomLeftPoint, centrePoint, givenHeight - 1, givenPlaces);
+    bottomRightTree = new Quad
+            (bottomMidPoint, rightMidPoint, givenHeight - 1, givenPlaces);
 }
 
 // Insert a node into the quadtree
@@ -90,24 +121,24 @@ void Quad::insert(Node *node)
  
     // We are at a quad of unit area
     // We cannot subdivide this quad further
-    if (abs(topRight.latitude() - bottomLeft.latitude()) <= 1 &&
-        abs(topRight.longitude() - bottomLeft.longitude()) <= 1)
+    if (abs(topRightPoint.latitude() - bottomLeftPoint.latitude()) <= 1 &&
+        abs(topRightPoint.longitude() - bottomLeftPoint.longitude()) <= 1)
     {
         if (nodePtr== nullptr)
             nodePtr= node;
         return;
     }
  
-    if ((topRight.latitude() + bottomLeft.latitude()) / 2 >= node->position.latitude())
+    if ((topRightPoint.latitude() + bottomLeftPoint.latitude()) / 2 >= node->position.latitude())
     {
         // Indicates topLeftTree
-        if ((topRight.longitude() + bottomLeft.longitude()) / 2 >= node->position.longitude())
+        if ((topRightPoint.longitude() + bottomLeftPoint.longitude()) / 2 >= node->position.longitude())
         {
             if (topLeftTree == nullptr)
                 topLeftTree = new Quad(
-                    QGeoCoordinate(topRight.latitude(), topRight.longitude()),
-                    QGeoCoordinate((topRight.latitude() + bottomLeft.latitude()) / 2,
-                        (topRight.longitude() + bottomLeft.longitude()) / 2));
+                    QGeoCoordinate(topRightPoint.latitude(), topRightPoint.longitude()),
+                    QGeoCoordinate((topRightPoint.latitude() + bottomLeftPoint.latitude()) / 2,
+                        (topRightPoint.longitude() + bottomLeftPoint.longitude()) / 2));
             topLeftTree->insert(node);
         }
  
@@ -116,24 +147,24 @@ void Quad::insert(Node *node)
         {
             if (botLeftTree == nullptr)
                 botLeftTree = new Quad(
-                    QGeoCoordinate(topRight.latitude(),
-                        (topRight.longitude() + bottomLeft.longitude()) / 2),
-                    QGeoCoordinate((topRight.latitude() + bottomLeft.latitude()) / 2,
-                        bottomLeft.longitude()));
+                    QGeoCoordinate(topRightPoint.latitude(),
+                        (topRightPoint.longitude() + bottomLeftPoint.longitude()) / 2),
+                    QGeoCoordinate((topRightPoint.latitude() + bottomLeftPoint.latitude()) / 2,
+                        bottomLeftPoint.longitude()));
             botLeftTree->insert(node);
         }
     }
     else
     {
         // Indicates topRightTree
-        if ((topRight.longitude() + bottomLeft.longitude()) / 2 >= node->position.longitude())
+        if ((topRightPoint.longitude() + bottomLeftPoint.longitude()) / 2 >= node->position.longitude())
         {
-            if (topRightTree == nullptr)
-                topRightTree = new Quad(
-                    QGeoCoordinate((topRight.latitude() + bottomLeft.latitude()) / 2,
-                        topRight.longitude()),
-                    QGeoCoordinate(bottomLeft.latitude(),
-                        (topRight.longitude() + bottomLeft.longitude()) / 2));
+            if (topRightPointTree == nullptr)
+                topRightPointTree = new Quad(
+                    QGeoCoordinate((topRightPoint.latitude() + bottomLeftPoint.latitude()) / 2,
+                        topRightPoint.longitude()),
+                    QGeoCoordinate(bottomLeftPoint.latitude(),
+                        (topRight.longitude() + bottomLeftPoint.longitude()) / 2));
             topRightTree->insert(node);
         }
  
@@ -142,9 +173,9 @@ void Quad::insert(Node *node)
         {
             if (botRightTree == nullptr)
                 botRightTree = new Quad(
-                    QGeoCoordinate((topRight.latitude() + bottomLeft.latitude()) / 2,
-                        (topRight.longitude() + bottomLeft.longitude()) / 2),
-                    QGeoCoordinate(bottomLeft.latitude(), bottomLeft.longitude()));
+                    QGeoCoordinate((topRight.latitude() + bottomLeftPoint.latitude()) / 2,
+                        (topRight.longitude() + bottomLeftPoint.longitude()) / 2),
+                    QGeoCoordinate(bottomLeftPoint.latitude(), bottomLeftPoint.longitude()));
             botRightTree->insert(node);
         }
     }
@@ -162,10 +193,10 @@ Node* Quad::search(QGeoCoordinate p)
     if (nodePtr!= nullptr)
         return n;
  
-    if ((topRight.latitude() + bottomLeft.latitude()) / 2 >= p.latitude())
+    if ((topRight.latitude() + bottomLeftPoint.latitude()) / 2 >= p.latitude())
     {
         // Indicates topLeftTree
-        if ((topRight.longitude() + bottomLeft.longitude()) / 2 >= p.longitude())
+        if ((topRight.longitude() + bottomLeftPoint.longitude()) / 2 >= p.longitude())
         {
             if (topLeftTree == nullptr)
                 return nullptr;
@@ -183,7 +214,7 @@ Node* Quad::search(QGeoCoordinate p)
     else
     {
         // Indicates topRightTree
-        if ((topRight.longitude() + bottomLeft.longitude()) / 2 >= p.longitude())
+        if ((topRight.longitude() + bottomLeftPoint.longitude()) / 2 >= p.longitude())
         {
             if (topRightTree == nullptr)
                 return nullptr;
@@ -205,12 +236,20 @@ bool Quad::inBoundary(QGeoCoordinate givenPoint)
 {
     // Is the point "after" the bottom left corner and "before"
     // the top right corner (or on the edge of the map)? 
-    return (givenPoint.longtitude() >= bottomLeft.longtitude()
-        && givenPoint.latitide() >= bottomLeft.latitude()
-        && givenPoint.longtidude() <= topRight.longtitude()
-        && givenPoint.latitude() <= topRight.latitude());
+    return (givenPoint.longitude() >= bottomLeftPoint.longitude()
+        && givenPoint.latitude() >= bottomLeftPoint.latitude()
+        && givenPoint.longitude() <= topRightPoint.longitude()
+        && givenPoint.latitude() <= topRightPoint.latitude());
 }
  
+QGeoCoordinate Quad::findMidPoint(QGeoCoordinate firstPoint
+    , QGeoCoordinate secondPoint)
+{
+  // MidPoint( (x1 + x2) / 2, (y1 + y2) / 2 )
+  return QGeoCoordinate((firstPoint.longitude() + secondPoint.longitude()) / 2
+      , (firstPoint.latitude() + secondPoint.latitude()) / 2);
+} // findMidPoint
+
 // Driver program
 /*int main()
 {
