@@ -2,6 +2,7 @@
 #define QUADTREE_H
 
 #include <QGeoCoordinate>
+#include <QSet>
 
 
 #include <iostream>
@@ -19,7 +20,7 @@ class Quad
     QGeoCoordinate topRightPoint;
 
     // Contains details of node
-    QList<Place *> *heldPlacesPtr;
+    QSet<Place *> *heldPlacesPtr;
 
     // Children of this tree
     Quad *topLeftTree;
@@ -32,13 +33,16 @@ class Quad
 
 public:
     Quad();
-    Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight, int depth, QList<Place*> givenPlaces);
+    Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight, int depth, QSet<Place*> givenPlaces);
+    QSet<Place *> search(QGeoCoordinate givenBottomLeft
+                        , QGeoCoordinate givenTopRight);
     static Quad createUsingQlist();
     static QGeoCoordinate findMidPoint(QGeoCoordinate firstPoint
         , QGeoCoordinate secondPoint);
-    void insert(Node*);
-    Node* search(QGeoCoordinate);
-    bool inBoundary(QGeoCoordinate);
+    static bool inBoundary (QGeoCoordinate givenPoint
+        , QGeoCoordinate bottomLeftPoint, QGeoCoordinate topRightPoint);
+    bool inBoundary(QGeoCoordinate givenPoint);
+
 };
 
 #endif // QUADTREE_H
