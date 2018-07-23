@@ -17,6 +17,7 @@ int main(int argc, char *argv[])
 
     QList<Place *> schoolsList = Extractor::getSchools("schools.json");
 
+    /*
     Node b(schoolsList[0]);
 
     Quad oneLocationQuad(Point(-100,-100), Point(100,100));
@@ -44,6 +45,7 @@ int main(int argc, char *argv[])
     oneLocationQuad.insert(&anotherb);
 
     qDebug() <<oneLocationQuad.search(anotherb.pos)->pos.x<<endl;
+    */
 
     return a.exec();
 }
