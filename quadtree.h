@@ -9,7 +9,7 @@
 #include <iostream>
 #include <cmath>
 #include "place.h"
-#include "extractdata.h"
+class Extractor;
 
 using namespace std;
 
@@ -35,6 +35,7 @@ class Quad
 public:
     Quad();
     ~Quad();
+    Quad(QSet<Place*> places);
     Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight, int depth, QSet<Place*> givenPlaces);
     QSet<Place *> search(QGeoCoordinate givenBottomLeft
                         , QGeoCoordinate givenTopRight);

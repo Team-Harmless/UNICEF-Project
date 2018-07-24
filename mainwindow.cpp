@@ -35,26 +35,13 @@ MainWindow::~MainWindow()
 void MainWindow::on_actionImport_Schools_triggered() //Gets full path to file
 {
     QString documentsLocation = QStandardPaths::locate(QStandardPaths::DocumentsLocation, QString(), QStandardPaths::LocateDirectory);
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Schools File"), documentsLocation, tr("JSON Files (*.json)"));
-    if (fileName != "") {
-        QList<Place*> schools = Extractor::getSchools(fileName);
-        qDebug() << "Imported" << schools.count() << "schools";
-        searcher->addData(schools);
-        places += schools;
-        ui->actionImport_Schools->setEnabled(false);
-    }
+    schoolFile = QFileDialog::getOpenFileName(this, tr("Open Schools File"), documentsLocation, tr("JSON Files (*.json)"));
 }
 
 void MainWindow::on_actionImport_Hospitals_triggered()
 {
     QString documentsLocation = QStandardPaths::locate(QStandardPaths::DocumentsLocation, QString(), QStandardPaths::LocateDirectory);
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Schools File"), documentsLocation, tr("JSON Files (*.json)"));
-    if (fileName != "") {
-        QList<Place*> healthFacilities = Extractor::getHealthFacilities(fileName);
-        searcher->addData(healthFacilities);
-        places += healthFacilities;
-        ui->actionImport_Hospitals->setEnabled(false);
-    }
+    hospFile = QFileDialog::getOpenFileName(this, tr("Open Schools File"), documentsLocation, tr("JSON Files (*.json)"));
 }
 
 void MainWindow::unitUpdate(double mult) {
@@ -157,4 +144,21 @@ void MainWindow::on_hospitalsBox_toggled(bool)
 void MainWindow::on_clinicsBox_toggled(bool)
 {
     displayResults();
+}
+
+void MainWindow::on_actionImport_triggered()
+{
+    ui->actionImport_Schools->setEnabled(false);
+    ui->actionImport_Hospitals->setEnabled(false);
+    if (hospFile != "") {
+        QList<Place*> healthFacilities = Extractor::getHealthFacilities(hospFile);
+        searcher->addData(healthFacilities);
+        places += healthFacilities;
+    }
+    if (schoolFile != "") {
+        QList<Place*> schools = Extractor::getHealthFacilities(schoolFile);
+        searcher->addData(schools);
+        places += schools;
+    }
+    locations = new Quad(places.toSet());
 }

@@ -184,6 +184,7 @@
    </attribute>
    <addaction name="actionImport_Schools"/>
    <addaction name="actionImport_Hospitals"/>
+   <addaction name="actionImport"/>
   </widget>
   <action name="actionImport_Schools">
    <property name="text">
@@ -193,6 +194,11 @@
   <action name="actionImport_Hospitals">
    <property name="text">
     <string>Import Hospitals</string>
+   </property>
+  </action>
+  <action name="actionImport">
+   <property name="text">
+    <string>Import</string>
    </property>
   </action>
  </widget>

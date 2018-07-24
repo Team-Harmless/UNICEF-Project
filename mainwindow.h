@@ -5,6 +5,7 @@
 #include "search.h"
 #include <QList>
 #include "place.h"
+#include "quadtree.h"
 
 class Worker : public QObject {
     Q_OBJECT
@@ -35,9 +36,12 @@ public:
 private:
     void unitUpdate(double mult);
     Search *searcher;
+    Quad *locations;
     QList<Place*> places;
     QList<Place*> displyedPlaces;
     QList<Place*> applyFilter(QList<Place*> places);
+    QString schoolFile;
+    QString hospFile;
 
 private slots:
     void on_actionImport_Schools_triggered();
@@ -55,6 +59,8 @@ private slots:
     void on_hospitalsBox_toggled(bool checked);
 
     void on_clinicsBox_toggled(bool checked);
+
+    void on_actionImport_triggered();
 
 private:
     Ui::MainWindow *ui;

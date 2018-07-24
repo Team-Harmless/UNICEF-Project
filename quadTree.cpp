@@ -80,6 +80,36 @@ Quad:: ~Quad()
   }
 }
 
+Quad::Quad(QSet<Place*> places)
+{
+    double minLongitude = places.values().at(0)->coord.longitude();
+    double maxLongitude = places.values().at(0)->coord.longitude();
+    double minLatitude = places.values().at(0)->coord.latitude();
+    double maxLatitude = places.values().at(0)->coord.latitude();
+
+    foreach (Place* place, places)
+    {
+        if (minLongitude > place->coord.longitude())
+            minLongitude = place->coord.longitude();
+        else if (maxLongitude < place->coord.longitude())
+            maxLongitude = place->coord.longitude();
+        if (minLatitude > place->coord.latitude())
+            minLatitude = place->coord.latitude();
+        else if (maxLatitude < place->coord.latitude())
+            maxLatitude = place->coord.latitude();
+    } // foreach
+
+    bottomLeftPoint = QGeoCoordinate(minLatitude, minLongitude);
+    topRightPoint = QGeoCoordinate(maxLatitude, maxLongitude);
+    heldPlacesPtr = nullptr;
+    topLeftTree  = nullptr;
+    topRightTree = nullptr;
+    bottomLeftTree  = nullptr;
+    bottomRightTree = nullptr;
+
+    height = 3;
+}
+
 Quad::Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight
            , int givenHeight, QSet<Place *> givenPlaces)
 {
