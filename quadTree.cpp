@@ -50,28 +50,36 @@ Quad::Quad()
     bottomRightTree = nullptr;
 }
 
-/* TODO - not working
 Quad:: ~Quad()
 {
-  qDebug() << "deleting at height" << height;
-  qDebug() << bottomLeftPoint << topRightPoint;
   if (topLeftTree)
+  {
       delete topLeftTree;
+      topLeftTree = nullptr;
+  }
   if (topRightTree)
+  {
       delete topRightTree;
+      topLeftTree = nullptr;
+  }
   if (bottomLeftTree)
+  {
       delete topLeftTree;
+      topLeftTree = nullptr;
+  }
   if (bottomRightTree)
+  {
       delete bottomRightTree;
+      topLeftTree = nullptr;
+  }
 
-  qDebug() << "deleted trees at height" << height;
   if (heldPlacesPtr)
   {
-      qDebug() << "no null pointer for set";
       delete heldPlacesPtr;
   }
-  qDebug() << "deleted pointer at height" << height;
-} */
+
+  heldPlacesPtr = nullptr;
+}
 
 Quad::Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight
            , int givenHeight, QSet<Place *> givenPlaces)

@@ -34,7 +34,7 @@ class Quad
 
 public:
     Quad();
-    //~Quad();
+    ~Quad();
     Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight, int depth, QSet<Place*> givenPlaces);
     QSet<Place *> search(QGeoCoordinate givenBottomLeft
                         , QGeoCoordinate givenTopRight);
