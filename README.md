@@ -28,10 +28,10 @@ This will be updated when the UI is finished
 ## Progress
 - [x] Parse JSON files
 - [x] Search Schools and health facilities by name
-- [ ] Search UI
+- [x] Search UI
 - [x] Search schools and facilities by location
-- [ ] General UI
+- [x] General UI
 - [ ] QML renderer of graph
-- [ ] Google map integration
+- [ ] ~~ Google~~ Bing map integration
 
 ![LOGO](./logo.png)
