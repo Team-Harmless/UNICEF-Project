@@ -32,6 +32,6 @@ This will be updated when the UI is finished
 - [x] Search schools and facilities by location
 - [x] General UI
 - [ ] QML renderer of graph
-- [ ] ~~ Google~~ Bing map integration
+- [ ] ~~Google~~ Bing map integration
 
 ![LOGO](./logo.png)
