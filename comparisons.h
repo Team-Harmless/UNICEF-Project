@@ -3,6 +3,7 @@
 
 #include <QGeoCoordinate>
 #include <QString>
+#include <QJsonDocument>
 
 class Comparisons
 {
@@ -26,6 +27,8 @@ private:
     QList<double> strightLineMethod(QGeoCoordinate pointA, QList<QGeoCoordinate> pointB);
     QList<double> roadMethod(QGeoCoordinate pointA, QList<QGeoCoordinate> pointB);
     QList<double> timeMethod(QGeoCoordinate pointA, QList<QGeoCoordinate> pointB);
+
+    QJsonDocument webRequester(QGeoCoordinate pointA, QList<QGeoCoordinate> pointB);
 };
 
 #endif // COMPARISONS_H
