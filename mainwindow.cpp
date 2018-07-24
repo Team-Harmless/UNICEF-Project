@@ -133,8 +133,8 @@ void Worker::showMesage()
 {
     msgBox = new QMessageBox();
     msgBox->setDefaultButton(QMessageBox::NoButton);
-    msgBox->setText("Importing");
-    msgBox->exec();
+    msgBox->setText(tr("Importing"));
+    msgBox->show();
 }
 
 void Worker::setMessage(QString s)
