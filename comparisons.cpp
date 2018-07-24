@@ -2,6 +2,8 @@
 #include <QNetworkAccessManager>
 #include <QUrl>
 #include <QUrlQuery>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 
 QString coordToStr(QGeoCoordinate c) {
     double pointALat  = c.latitude();
@@ -57,6 +59,8 @@ double Comparisons::roadMethod(QGeoCoordinate pointA, QGeoCoordinate pointB) {
     QNetworkAccessManager man;
     QNetworkRequest request(url);
     QNetworkReply *reply = man.get(request);
+    while(reply->isRunning()) ;;
+    if(reply->error() != QNetworkReply::NoError) return 0.0;
     return 0.0;
 }
 
@@ -73,6 +77,8 @@ double Comparisons::timeMethod(QGeoCoordinate pointA, QGeoCoordinate pointB) {
     QNetworkAccessManager man;
     QNetworkRequest request(url);
     QNetworkReply *reply = man.get(request);
+    while(reply->isRunning()) ;;
+    if(reply->error() != QNetworkReply::NoError) return 0.0;
     return 0.0;
 }
 
@@ -105,6 +111,8 @@ QList<double> Comparisons::roadMethod(QGeoCoordinate pointA, QList<QGeoCoordinat
     QNetworkAccessManager man;
     QNetworkRequest request(url);
     QNetworkReply *reply = man.get(request);
+    while(reply->isRunning()) ;;
+    if(reply->error() != QNetworkReply::NoError) QList<double>();
     return QList<double>();
 }
 
@@ -126,5 +134,7 @@ QList<double> Comparisons::timeMethod(QGeoCoordinate pointA, QList<QGeoCoordinat
     QNetworkAccessManager man;
     QNetworkRequest request(url);
     QNetworkReply *reply = man.get(request);
+    while(reply->isRunning()) ;;
+    if(reply->error() != QNetworkReply::NoError) QList<double>();
     return QList<double>();
 }

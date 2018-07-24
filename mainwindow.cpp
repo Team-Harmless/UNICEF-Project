@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     searcher = new Search();
+    searchThread = new QThread();
     ui->setupUi(this);
     ui->splitter->setStretchFactor(0,0);
     ui->splitter->setStretchFactor(1,1);
@@ -25,6 +26,8 @@ MainWindow::~MainWindow()
     foreach (Place *pl, places) {
         delete pl;
     }
+    while (searchThread->isRunning()) ;;
+    delete searchThread;
     delete searcher;
     delete ui;
 }
@@ -70,24 +73,18 @@ void MainWindow::on_milesBox_toggled(bool checked) { if (checked) unitUpdate(0.6
 
 void MainWindow::on_searchBar_textChanged(const QString &arg1)
 {
-    if (searchThread != NULL) searchThread->blockSignals(true);
+    while(searchThread->isRunning()) ;;
     ui->resultsList->clear();
     displyedPlaces.clear();
-    if (arg1 == "") return;
-    QThread *t = new QThread();
     Worker *w = new Worker();
     w->searcher = searcher;
     w->query = arg1;
-    w->moveToThread(t);
-    connect(w, SIGNAL(finished()), t, SLOT(quit()));
+    w->moveToThread(searchThread);
+    connect(w, SIGNAL(finished()), searchThread, SLOT(quit()));
     connect(w, SIGNAL(finished()), this, SLOT(displayResults()));
     connect(w, SIGNAL(finished()), w, SLOT(deleteLater()));
-    connect(t, SIGNAL(finished()), t, SLOT(deleteLater()));
-    connect(t, SIGNAL(started()), w, SLOT(doSearch()));
+    connect(searchThread, SIGNAL(started()), w, SLOT(doSearch()));
     connect(w, SIGNAL(addItemToResultsList(Place*)), this, SLOT(addItemToRList(Place*)));
-    t->start();
-    searchThread = t;
-
 }
 
 QList<Place*> MainWindow::applyFilter(QList<Place*> places) {
