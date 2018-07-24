@@ -1,1 +1,11 @@
 *.pro.user*
+
+*.o
+
+*.json
+
+*.json.zip
+
+Makefile
+
+UNICEF-Project
