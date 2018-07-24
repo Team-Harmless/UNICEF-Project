@@ -76,9 +76,8 @@ Quad:: ~Quad()
   if (heldPlacesPtr)
   {
       delete heldPlacesPtr;
+      heldPlacesPtr = nullptr;
   }
-
-  heldPlacesPtr = nullptr;
 }
 
 Quad::Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight
