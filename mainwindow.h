@@ -6,6 +6,7 @@
 #include <QList>
 #include "place.h"
 #include "quadtree.h"
+#include <QMessageBox>
 
 class Worker : public QObject {
     Q_OBJECT
@@ -14,8 +15,13 @@ public:
     ~Worker();
     Search *searcher;
     QString query;
+private:
+    QMessageBox *msgBox;
 public slots:
     void doSearch();
+    void showMesage();
+    void setMessage(QString s);
+    void closeMessage();
 signals:
     void finished();
     void addItemToResultsList(Place *s);
@@ -32,6 +38,10 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+signals:
+    void setMessage(QString s);
+    void closeMessage();
 
 private:
     void unitUpdate(double mult);

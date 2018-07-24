@@ -9,13 +9,16 @@
 
 double distanceMultiplier = 1;
 QThread *searchThread = NULL;
+QThread *importThread = NULL;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     searcher = new Search();
+    locations = NULL;
     searchThread = new QThread();
+    importThread = new QThread();
     ui->setupUi(this);
     ui->splitter->setStretchFactor(0,0);
     ui->splitter->setStretchFactor(1,1);
@@ -126,6 +129,25 @@ void Worker::doSearch()
     emit(finished());
 }
 
+void Worker::showMesage()
+{
+    msgBox = new QMessageBox();
+    msgBox->setDefaultButton(QMessageBox::NoButton);
+    msgBox->setText("Importing");
+    msgBox->exec();
+}
+
+void Worker::setMessage(QString s)
+{
+    msgBox->setText(s);
+}
+
+void Worker::closeMessage()
+{
+    msgBox->hide();
+    msgBox->deleteLater();
+}
+
 void MainWindow::on_schoolsBox_toggled(bool)
 {
     displayResults();
@@ -148,17 +170,41 @@ void MainWindow::on_clinicsBox_toggled(bool)
 
 void MainWindow::on_actionImport_triggered()
 {
+    ui->resultsList->clear();
+    displyedPlaces.clear();
+    Worker *w = new Worker();
+    w->moveToThread(importThread);
+    connect(w, SIGNAL(finished()), importThread, SLOT(quit()));
+    connect(w, SIGNAL(finished()), w, SLOT(deleteLater()));
+    connect(w, SIGNAL(finished()), w, SLOT(deleteLater()));
+    connect(this, SIGNAL(setMessage(QString)), w, SLOT(setMessage(QString)));
+    connect(this, SIGNAL(closeMessage()), w, SLOT(closeMessage()));
+    connect(this, SIGNAL(closeMessage()), w, SLOT(deleteLater()));
+    connect(importThread, SIGNAL(started()), w, SLOT(showMesage()));
+
+    importThread->start();
+
+    emit(setMessage("Cleaning up"));
+
+    delete searcher; searcher = new Search();
+    if(locations != NULL) delete locations;
     ui->actionImport_Schools->setEnabled(false);
     ui->actionImport_Hospitals->setEnabled(false);
+
+    emit (setMessage("Importing and indexing Health facilities for search"));
     if (hospFile != "") {
         QList<Place*> healthFacilities = Extractor::getHealthFacilities(hospFile);
         searcher->addData(healthFacilities);
         places += healthFacilities;
     }
+    emit (setMessage("Importing and indexing Schools for search"));
     if (schoolFile != "") {
         QList<Place*> schools = Extractor::getHealthFacilities(schoolFile);
         searcher->addData(schools);
         places += schools;
     }
+    emit (setMessage("Building Map"));
     locations = new Quad(places.toSet());
+    emit(closeMessage());
+    ui->actionImport->setEnabled(false);
 }
