@@ -2,11 +2,17 @@ import QtQuick 2.0
 import "Scripts.js" as Scripts
 
 Image{
-    signal updateXY
-    onUpdateXY: {
-        x: calcX()
-        y: calcY()
+    id: image
+    Connections {
+        target: root
+        onUpdateMap: {image.destroy()}
     }
+
+    function clearPoints() {
+        console.log("Hello there")
+        this.destroy();
+    }
+
     property string spriteType: "hosp"
     property real angle: 0;
     property real distance: 0;
@@ -14,7 +20,7 @@ Image{
     function getFilePath() {
         if (spriteType == "hosp") {
             console.log("Hosp image ")
-            return "hosp.jpg"
+            return "hosp.png"
         }
         else {
             console.log("School image ")
@@ -32,12 +38,14 @@ Image{
         return ret
     }
 
-    x: calcX()
-    y: calcY()
+    x: calcX() - 25
+    y: calcY() - 25
 
 
     source: getFilePath()
 
     width: 50
     height: 50
+
+
 }

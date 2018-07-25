@@ -9,6 +9,7 @@ Rectangle {
     color: "lightgray"
 
     property real radiusKM: 1000
+    property bool clear: false;
 
     Text {
         id: mapModeIndicatior
@@ -25,9 +26,16 @@ Rectangle {
     MouseArea{
         anchors.fill: parent
         onClicked: {
+            if (!clear) {
             Scripts.createSpriteObjects("hosp", 0.785398, 800, "Hosp1");
             Scripts.createSpriteObjects("hosp", -0.785398, 400, "Hosp2");
             Scripts.createSpriteObjects("school", 0, 0, "Scl1");
+            clear = true;
+            }
+            else {
+                updateMap()
+                clear = false;
+            }
         }
     }
 
@@ -43,6 +51,5 @@ Rectangle {
 
     }
 
-    onHeightChanged: children.updateXY
-    onWidthChanged: children.updateXY
+    signal updateMap
 }
