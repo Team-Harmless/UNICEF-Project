@@ -15,13 +15,9 @@ public:
     ~Worker();
     Search *searcher;
     QString query;
-private:
-    QMessageBox *msgBox;
 public slots:
     void doSearch();
-    void showMesage();
-    void setMessage(QString s);
-    void closeMessage();
+
 signals:
     void finished();
     void addItemToResultsList(Place *s);

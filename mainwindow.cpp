@@ -44,7 +44,7 @@ void MainWindow::on_actionImport_Schools_triggered() //Gets full path to file
 void MainWindow::on_actionImport_Hospitals_triggered()
 {
     QString documentsLocation = QStandardPaths::locate(QStandardPaths::DocumentsLocation, QString(), QStandardPaths::LocateDirectory);
-    hospFile = QFileDialog::getOpenFileName(this, tr("Open Schools File"), documentsLocation, tr("JSON Files (*.json)"));
+    hospFile = QFileDialog::getOpenFileName(this, tr("Open Hospitals"), documentsLocation, tr("JSON Files (*.json *.geojson)"));
 }
 
 void MainWindow::unitUpdate(double mult) {
@@ -63,6 +63,7 @@ void MainWindow::on_milesBox_toggled(bool checked) { if (checked) unitUpdate(0.6
 
 void MainWindow::on_searchBar_textChanged(const QString &arg1)
 {
+    qDebug() << "search";
     while(searchThread->isRunning()) ;;
     ui->resultsList->clear();
     displyedPlaces.clear();
@@ -75,6 +76,7 @@ void MainWindow::on_searchBar_textChanged(const QString &arg1)
     connect(w, SIGNAL(finished()), w, SLOT(deleteLater()));
     connect(searchThread, SIGNAL(started()), w, SLOT(doSearch()));
     connect(w, SIGNAL(addItemToResultsList(Place*)), this, SLOT(addItemToRList(Place*)));
+    searchThread->start();
 }
 
 QList<Place*> MainWindow::applyFilter(QList<Place*> places) {
@@ -98,7 +100,6 @@ QList<Place*> MainWindow::applyFilter(QList<Place*> places) {
 
 void MainWindow::addItemToRList(Place* s)
 {
-    searchThread = NULL;
     displyedPlaces << s;
 }
 
@@ -129,25 +130,6 @@ void Worker::doSearch()
     emit(finished());
 }
 
-void Worker::showMesage()
-{
-    msgBox = new QMessageBox();
-    msgBox->setDefaultButton(QMessageBox::NoButton);
-    msgBox->setText(tr("Importing"));
-    msgBox->show();
-}
-
-void Worker::setMessage(QString s)
-{
-    msgBox->setText(s);
-}
-
-void Worker::closeMessage()
-{
-    msgBox->hide();
-    msgBox->deleteLater();
-}
-
 void MainWindow::on_schoolsBox_toggled(bool)
 {
     displayResults();
@@ -170,41 +152,24 @@ void MainWindow::on_clinicsBox_toggled(bool)
 
 void MainWindow::on_actionImport_triggered()
 {
+    QMessageBox msgBox;
     ui->resultsList->clear();
     displyedPlaces.clear();
-    Worker *w = new Worker();
-    w->moveToThread(importThread);
-    connect(w, SIGNAL(finished()), importThread, SLOT(quit()));
-    connect(w, SIGNAL(finished()), w, SLOT(deleteLater()));
-    connect(w, SIGNAL(finished()), w, SLOT(deleteLater()));
-    connect(this, SIGNAL(setMessage(QString)), w, SLOT(setMessage(QString)));
-    connect(this, SIGNAL(closeMessage()), w, SLOT(closeMessage()));
-    connect(this, SIGNAL(closeMessage()), w, SLOT(deleteLater()));
-    connect(importThread, SIGNAL(started()), w, SLOT(showMesage()));
-
-    importThread->start();
-
-    emit(setMessage("Cleaning up"));
 
     delete searcher; searcher = new Search();
     if(locations != NULL) delete locations;
     ui->actionImport_Schools->setEnabled(false);
     ui->actionImport_Hospitals->setEnabled(false);
 
-    emit (setMessage("Importing and indexing Health facilities for search"));
     if (hospFile != "") {
         QList<Place*> healthFacilities = Extractor::getHealthFacilities(hospFile);
-        searcher->addData(healthFacilities);
         places += healthFacilities;
     }
-    emit (setMessage("Importing and indexing Schools for search"));
     if (schoolFile != "") {
         QList<Place*> schools = Extractor::getHealthFacilities(schoolFile);
-        searcher->addData(schools);
         places += schools;
     }
-    emit (setMessage("Building Map"));
+    searcher->addData(places);
     locations = new Quad(places.toSet());
-    emit(closeMessage());
     ui->actionImport->setEnabled(false);
 }
