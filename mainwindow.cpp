@@ -8,9 +8,6 @@
 #include <QThread>
 #include <QQuickWidget>
 
-// Added import for qml
-#include <QtQuickWidgets/QQuickWidget>
-
 double distanceMultiplier = 1;
 QThread *searchThread = NULL;
 QThread *importThread = NULL;
@@ -26,14 +23,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->splitter->setStretchFactor(0,0);
     ui->splitter->setStretchFactor(1,1);
-<<<<<<< HEAD
-
-    QQuickWidget *qmlWidget = ui->quickWidgetQML;
-    qmlWidget->setSource(QUrl::fromLocalFile("qml/main.qml"));
-=======
     ui->mapQML->setResizeMode(QQuickWidget::SizeRootObjectToView);
     ui->mapQML->setSource(QUrl::fromLocalFile("Map.qml"));
->>>>>>> QML
 }
 
 MainWindow::~MainWindow()
