@@ -7,13 +7,20 @@
 #include <quadtree.h>
 #include <place.h>
 
+struct Polar
+{
+    Place * place;
+    double distance;
+    double angle;
+};
+
 class Context
 {
 public:
     Context();
-    Context(Quad placesQuad, Place * origin, double radius);
+    Context(Quad *placesQuad, Place * origin, double radius);
     void update(Quad *placesQuad, Place * origin, double radius);
-    QList<Place *> placesList;
+    QList<Polar> polarCoordinates;
 private:
     Quad *placesQuad;
     QHash<QPair<QGeoCoordinate,QGeoCoordinate>, double> cachedDistances;

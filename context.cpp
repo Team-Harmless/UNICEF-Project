@@ -3,7 +3,7 @@
 Context::Context()
 {
     placesQuad = nullptr;
-    placesList = QList<Place *>();
+    polarCoordinates = QList<Polar>();
     cachedDistances = QHash<QPair<QGeoCoordinate,QGeoCoordinate>, double>();
 }
 
@@ -27,6 +27,21 @@ void Context::update(Quad *placesQuad, Place *origin, double radius)
                                   , originPoint.longitude() + longitudeDeviation);
 
    QSet<Place*> relevantPlaces = placesQuad->search(bottomLeftBound, topRightBound);
+
+   QList <QGeoCoordinate> placesToSearch;
+
+   foreach (Place * placePtr, relevantPlaces)
+   {
+       QPair<QGeoCoordinate, QGeoCoordinate> fromToPair(originPoint, placePtr->coord);
+       if (cachedDistances.contains(fromToPair))
+       {
+          Polar polarCoordinate;
+          polarCoordinate.place = placePtr;
+          double angle =// QGeo one to another.
+          polarCoordinate.angle =
+       }
+
+   }
 }
 
 
