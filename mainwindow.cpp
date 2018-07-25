@@ -67,7 +67,6 @@ void MainWindow::on_milesBox_toggled(bool checked) { if (checked) unitUpdate(0.6
 void MainWindow::on_searchBar_textChanged(const QString &arg1)
 {
     //if (arg1 == "") return;
-    while(searchThread->isRunning()) ;;
     ui->resultsList->clear();
     displyedPlaces.clear();
     Worker *w = new Worker();
@@ -79,6 +78,7 @@ void MainWindow::on_searchBar_textChanged(const QString &arg1)
     connect(w, SIGNAL(finished()), w, SLOT(deleteLater()));
     connect(searchThread, SIGNAL(started()), w, SLOT(doSearch()));
     connect(w, SIGNAL(addItemToResultsList(Place*)), this, SLOT(addItemToRList(Place*)));
+    searchThread->exit();
     searchThread->start();
 }
 
