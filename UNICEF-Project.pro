@@ -36,7 +36,8 @@ SOURCES += \
         healthfacility.cpp \
         search.cpp \
         comparisons.cpp \
-        quadTree.cpp
+        quadTree.cpp \
+    fetchplaces.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -46,7 +47,8 @@ HEADERS += \
         healthfacility.h \
         search.h \
         comparisons.h \
-        quadtree.h
+        quadtree.h \
+    fetchplaces.h
 
 FORMS += \
         mainwindow.ui
