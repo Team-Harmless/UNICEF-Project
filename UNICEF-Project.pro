@@ -8,7 +8,10 @@ QT       += core gui
 QT       += positioning
 QT += network
 QT += quickwidgets
+<<<<<<< HEAD
 
+=======
+>>>>>>> QML
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -54,9 +57,22 @@ FORMS += \
 QMAKE_CXXFLAGS += -std=c++0x
 
 DISTFILES += \
+<<<<<<< HEAD
     main.qml \
     qml/HealthFacility.qml \
     qml/School.qml \
     qml/main.qml
 
 RESOURCES += qml.qrc
+=======
+    Map.qml \
+    Sprite.qml \
+    Scripts.js \
+    Lines.qml
+
+copydata.commands  = $(COPY_DIR) $$PWD/*.qml $$OUT_PWD; $(COPY_DIR) $$PWD/*.js $$OUT_PWD
+first.depends = $(first) copydata
+export(first.depends)
+export(copydata.commands)
+QMAKE_EXTRA_TARGETS += first copydata
+>>>>>>> QML

@@ -45,7 +45,7 @@ private:
     Quad *locations;
     QList<Place*> places;
     QList<Place*> displyedPlaces;
-    QList<Place*> applyFilter(QList<Place*> places);
+    void applyFilter(QList<Place *> *places);
     QString schoolFile;
     QString hospFile;
 

@@ -4,7 +4,6 @@
 #include <QDebug>
 
 
-
 Tre* _addSearchableData(Tre *root, char *name, Place *data) {
     if (*name == '\0') {
         root->data = data;
@@ -71,6 +70,7 @@ int count(Tre *root) {
 Search::Search()
 {
     searchableData = (Tre*)malloc(sizeof(Tre));
+    searchableData->data = NULL;
     for (int i = 0; i < 26; i++) {
         searchableData->next[i] = NULL;
     }

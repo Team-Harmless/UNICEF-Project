@@ -6,6 +6,7 @@
 #include "extractdata.h"
 #include "healthfacility.h"
 #include <QThread>
+#include <QQuickWidget>
 
 // Added import for qml
 #include <QtQuickWidgets/QQuickWidget>
@@ -25,9 +26,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->splitter->setStretchFactor(0,0);
     ui->splitter->setStretchFactor(1,1);
+<<<<<<< HEAD
 
     QQuickWidget *qmlWidget = ui->quickWidgetQML;
     qmlWidget->setSource(QUrl::fromLocalFile("qml/main.qml"));
+=======
+    ui->mapQML->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    ui->mapQML->setSource(QUrl::fromLocalFile("Map.qml"));
+>>>>>>> QML
 }
 
 MainWindow::~MainWindow()
@@ -69,8 +75,7 @@ void MainWindow::on_milesBox_toggled(bool checked) { if (checked) unitUpdate(0.6
 
 void MainWindow::on_searchBar_textChanged(const QString &arg1)
 {
-    qDebug() << "search";
-    while(searchThread->isRunning()) ;;
+    //if (arg1 == "") return;
     ui->resultsList->clear();
     displyedPlaces.clear();
     Worker *w = new Worker();
@@ -82,26 +87,25 @@ void MainWindow::on_searchBar_textChanged(const QString &arg1)
     connect(w, SIGNAL(finished()), w, SLOT(deleteLater()));
     connect(searchThread, SIGNAL(started()), w, SLOT(doSearch()));
     connect(w, SIGNAL(addItemToResultsList(Place*)), this, SLOT(addItemToRList(Place*)));
+    searchThread->exit();
     searchThread->start();
 }
 
-QList<Place*> MainWindow::applyFilter(QList<Place*> places) {
-    QList<Place*> ret = places;
+void MainWindow::applyFilter(QList<Place*> *places) {
     if (!ui->schoolsBox->isChecked())
-        for(int i = ret.count() -1; i >= 0; i--)
-            if (ret.at(i)->classType == Place::Schl) ret.removeAt(i);
+        for(int i = places->count() -1; i >= 0; i--)
+            if (places->at(i)->classType == Place::Schl) places->removeAt(i);
     if (!ui->healthFacilitiesBox->isChecked())
-        for(int i = ret.count() -1; i >= 0; i--)
-            if (ret.at(i)->classType == Place::HlthFac) ret.removeAt(i);
+        for(int i = places->count() -1; i >= 0; i--)
+            if (places->at(i)->classType == Place::HlthFac) places->removeAt(i);
     if (!ui->clinicsBox->isChecked())
-        for(int i = ret.count() -1; i >= 0; i--)
-            if (ret.at(i)->classType == Place::HlthFac &&
-                    ((HealthFacility*)ret.at(i))->type.toLower() == "clinic") ret.removeAt(i);
+        for(int i = places->count() -1; i >= 0; i--)
+            if (places->at(i)->classType == Place::HlthFac &&
+                    ((HealthFacility*)places->at(i))->type.toLower() == "clinic") places->removeAt(i);
     if (!ui->hospitalsBox->isChecked())
-        for(int i = ret.count() -1; i >= 0; i--)
-            if (ret.at(i)->classType == Place::HlthFac &&
-                    ((HealthFacility*)ret.at(i))->type.toLower() == "hospital") ret.removeAt(i);
-    return ret;
+        for(int i = places->count() -1; i >= 0; i--)
+            if (places->at(i)->classType == Place::HlthFac &&
+                    ((HealthFacility*)places->at(i))->type.toLower() == "hospital") places->removeAt(i);
 }
 
 void MainWindow::addItemToRList(Place* s)
@@ -112,9 +116,11 @@ void MainWindow::addItemToRList(Place* s)
 void MainWindow::displayResults()
 {
     ui->resultsList->clear();
-    QList<Place*> dis = applyFilter(displyedPlaces);
-    foreach(Place *pl, dis)
-        ui->resultsList->addItem(pl->name);
+    applyFilter(&displyedPlaces);
+    foreach(Place *pl, displyedPlaces) {
+        if (pl != NULL)
+            ui->resultsList->addItem(pl->name);
+    }
 }
 
 
@@ -178,4 +184,5 @@ void MainWindow::on_actionImport_triggered()
     searcher->addData(places);
     locations = new Quad(places.toSet());
     ui->actionImport->setEnabled(false);
+    on_searchBar_textChanged("");
 }
