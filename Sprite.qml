@@ -6,28 +6,31 @@ Image{
         x: calcX()
         y: calcY()
     }
-
-    id: sprite
     property string spriteType: "hosp"
     property real angle: 0;
     property real distance: 0;
 
     function getFilePath() {
         if (spriteType == "hosp") {
-            console.log("Hosp image")
+            console.log("Hosp image ")
             return "hosp.png"
         }
         else {
+            console.log("School image ")
            return "school.png";
         }
     }
 
     function calcX() {
-        return parent.width/2 + (distance * Math.sin(angle));
+        var ret = parent.width/2 + (distance * Math.sin(angle));
+        console.log("x: " + ret + " From anngle: " + angle + " distance: " + distance);
+        return ret
     }
 
     function calcY() {
-        return parent.height/2 + distance * (Math.cos(angle))
+        var ret = parent.height/2 + (distance * Math.cos(angle));
+        console.log("y: " + ret);
+        return ret
     }
 
     x: calcX()

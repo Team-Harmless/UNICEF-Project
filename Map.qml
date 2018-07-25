@@ -22,7 +22,10 @@ Rectangle {
 
     MouseArea{
         anchors.fill: parent
-        onClicked: Scripts.createSpriteObjects("hosp", 0,0)
+        onClicked: {
+            Scripts.createSpriteObjects("hosp", 0.5, 100, "Hosp1");
+            Scripts.createSpriteObjects("school", 0, 0, "Scl1");
+        }
     }
 
     onHeightChanged: children.updateXY
