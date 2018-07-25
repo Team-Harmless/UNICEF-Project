@@ -7,6 +7,8 @@
 QT       += core gui
 QT       += positioning
 QT += network
+QT += quickwidgets
+
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -50,3 +52,11 @@ FORMS += \
         mainwindow.ui
 
 QMAKE_CXXFLAGS += -std=c++0x
+
+DISTFILES += \
+    main.qml \
+    qml/HealthFacility.qml \
+    qml/School.qml \
+    qml/main.qml
+
+RESOURCES += qml.qrc

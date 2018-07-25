@@ -1,6 +1,16 @@
 import QtQuick 2.0
-import QtQuick.Shapes 1.11
+import QtQuick.Shapes 1.0
 
+Image
+{
+
+    width: 130; height: 100
+    fillMode: Image.PreserveAspectFit
+
+    source: "healthFacility.svg"
+}
+
+/*
 Shape {
     width: 200
     height: 150
@@ -24,3 +34,4 @@ Shape {
         PathLine { x: 20; y: 20 }
     }
 }
+*/

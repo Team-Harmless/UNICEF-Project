@@ -7,6 +7,9 @@
 #include "healthfacility.h"
 #include <QThread>
 
+// Added import for qml
+#include <QtQuickWidgets/QQuickWidget>
+
 double distanceMultiplier = 1;
 QThread *searchThread = NULL;
 QThread *importThread = NULL;
@@ -22,6 +25,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->splitter->setStretchFactor(0,0);
     ui->splitter->setStretchFactor(1,1);
+
+    QQuickWidget *qmlWidget = ui->quickWidgetQML;
+    qmlWidget->setSource(QUrl::fromLocalFile("qml/main.qml"));
 }
 
 MainWindow::~MainWindow()
