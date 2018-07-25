@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import "Scripts.js" as Scripts
 
 Image{
     signal updateXY
@@ -22,14 +23,12 @@ Image{
     }
 
     function calcX() {
-        var ret = parent.width/2 + (distance * Math.sin(angle));
-        console.log("x: " + ret + " From anngle: " + angle + " distance: " + distance);
+        var ret = parent.width/2 + (Scripts.kmToPx(distance, 2 * parent.radiusKM, (parent.width < parent.height ? parent.width : parent.height) - 20) * Math.sin(angle));
         return ret
     }
 
     function calcY() {
-        var ret = parent.height/2 + (distance * Math.cos(angle));
-        console.log("y: " + ret);
+        var ret = parent.height/2 + (Scripts.kmToPx(-1 * distance, 2 * parent.radiusKM, (parent.width < parent.height ? parent.width : parent.height) - 20) * Math.cos(angle));
         return ret
     }
 

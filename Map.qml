@@ -8,6 +8,8 @@ Rectangle {
     id: root
     color: "lightgray"
 
+    property real radiusKM: 1000
+
     Text {
         id: mapModeIndicatior
         text: "Line Length = Stright Line Distance"
@@ -23,9 +25,22 @@ Rectangle {
     MouseArea{
         anchors.fill: parent
         onClicked: {
-            Scripts.createSpriteObjects("hosp", 0.5, 100, "Hosp1");
+            Scripts.createSpriteObjects("hosp", 0.785398, 800, "Hosp1");
+            Scripts.createSpriteObjects("hosp", -0.785398, 400, "Hosp2");
             Scripts.createSpriteObjects("school", 0, 0, "Scl1");
         }
+    }
+
+    Rectangle {
+         width: (parent.width < parent.height ? parent.width : parent.height) - 20
+         height: (parent.width < parent.height ? parent.width : parent.height) - 20
+         anchors.horizontalCenter: parent.horizontalCenter
+         anchors.verticalCenter: parent.verticalCenter
+         color: "lightgray"
+         border.color: "black"
+         border.width: 1
+         radius: width*0.5
+
     }
 
     onHeightChanged: children.updateXY
