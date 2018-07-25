@@ -7,6 +7,7 @@
 QT       += core gui
 QT       += positioning
 QT += network
+QT += quickwidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -50,3 +51,6 @@ FORMS += \
         mainwindow.ui
 
 QMAKE_CXXFLAGS += -std=c++0x
+
+DISTFILES += \
+    Map.qml

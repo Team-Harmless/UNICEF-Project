@@ -6,6 +6,7 @@
 #include "extractdata.h"
 #include "healthfacility.h"
 #include <QThread>
+#include <QQuickWidget>
 
 double distanceMultiplier = 1;
 QThread *searchThread = NULL;
@@ -22,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->splitter->setStretchFactor(0,0);
     ui->splitter->setStretchFactor(1,1);
+    ui->mapQML->setSource(QUrl::fromLocalFile("Map.qml"));
 }
 
 MainWindow::~MainWindow()
@@ -172,4 +174,5 @@ void MainWindow::on_actionImport_triggered()
     searcher->addData(places);
     locations = new Quad(places.toSet());
     ui->actionImport->setEnabled(false);
+    on_searchBar_textChanged("");
 }
