@@ -53,4 +53,12 @@ FORMS += \
 QMAKE_CXXFLAGS += -std=c++0x
 
 DISTFILES += \
-    Map.qml
+    Map.qml \
+    Sprite.qml \
+    Scripts.js
+
+copydata.commands  = $(COPY_DIR) $$PWD/*.qml $$OUT_PWD; $(COPY_DIR) $$PWD/*.js $$OUT_PWD
+first.depends = $(first) copydata
+export(first.depends)
+export(copydata.commands)
+QMAKE_EXTRA_TARGETS += first copydata

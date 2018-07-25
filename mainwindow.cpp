@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->splitter->setStretchFactor(0,0);
     ui->splitter->setStretchFactor(1,1);
+    ui->mapQML->setResizeMode(QQuickWidget::SizeRootObjectToView);
     ui->mapQML->setSource(QUrl::fromLocalFile("Map.qml"));
 }
 
