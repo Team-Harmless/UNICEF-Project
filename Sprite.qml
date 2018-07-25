@@ -14,7 +14,7 @@ Image{
     function getFilePath() {
         if (spriteType == "hosp") {
             console.log("Hosp image ")
-            return "hosp.png"
+            return "hosp.jpg"
         }
         else {
             console.log("School image ")

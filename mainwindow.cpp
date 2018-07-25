@@ -66,7 +66,7 @@ void MainWindow::on_milesBox_toggled(bool checked) { if (checked) unitUpdate(0.6
 
 void MainWindow::on_searchBar_textChanged(const QString &arg1)
 {
-    qDebug() << "search";
+    //if (arg1 == "") return;
     while(searchThread->isRunning()) ;;
     ui->resultsList->clear();
     displyedPlaces.clear();
@@ -82,23 +82,21 @@ void MainWindow::on_searchBar_textChanged(const QString &arg1)
     searchThread->start();
 }
 
-QList<Place*> MainWindow::applyFilter(QList<Place*> places) {
-    QList<Place*> ret = places;
+void MainWindow::applyFilter(QList<Place*> *places) {
     if (!ui->schoolsBox->isChecked())
-        for(int i = ret.count() -1; i >= 0; i--)
-            if (ret.at(i)->classType == Place::Schl) ret.removeAt(i);
+        for(int i = places->count() -1; i >= 0; i--)
+            if (places->at(i)->classType == Place::Schl) places->removeAt(i);
     if (!ui->healthFacilitiesBox->isChecked())
-        for(int i = ret.count() -1; i >= 0; i--)
-            if (ret.at(i)->classType == Place::HlthFac) ret.removeAt(i);
+        for(int i = places->count() -1; i >= 0; i--)
+            if (places->at(i)->classType == Place::HlthFac) places->removeAt(i);
     if (!ui->clinicsBox->isChecked())
-        for(int i = ret.count() -1; i >= 0; i--)
-            if (ret.at(i)->classType == Place::HlthFac &&
-                    ((HealthFacility*)ret.at(i))->type.toLower() == "clinic") ret.removeAt(i);
+        for(int i = places->count() -1; i >= 0; i--)
+            if (places->at(i)->classType == Place::HlthFac &&
+                    ((HealthFacility*)places->at(i))->type.toLower() == "clinic") places->removeAt(i);
     if (!ui->hospitalsBox->isChecked())
-        for(int i = ret.count() -1; i >= 0; i--)
-            if (ret.at(i)->classType == Place::HlthFac &&
-                    ((HealthFacility*)ret.at(i))->type.toLower() == "hospital") ret.removeAt(i);
-    return ret;
+        for(int i = places->count() -1; i >= 0; i--)
+            if (places->at(i)->classType == Place::HlthFac &&
+                    ((HealthFacility*)places->at(i))->type.toLower() == "hospital") places->removeAt(i);
 }
 
 void MainWindow::addItemToRList(Place* s)
@@ -109,9 +107,11 @@ void MainWindow::addItemToRList(Place* s)
 void MainWindow::displayResults()
 {
     ui->resultsList->clear();
-    QList<Place*> dis = applyFilter(displyedPlaces);
-    foreach(Place *pl, dis)
-        ui->resultsList->addItem(pl->name);
+    applyFilter(&displyedPlaces);
+    foreach(Place *pl, displyedPlaces) {
+        if (pl != NULL)
+            ui->resultsList->addItem(pl->name);
+    }
 }
 
 
