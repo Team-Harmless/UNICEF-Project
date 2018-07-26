@@ -2,14 +2,28 @@ import QtQuick 2.0
 import "Scripts.js" as Scripts
 
 Rectangle {
-
-
-
     id: root
     color: "lightgray"
 
-    property real radiusKM: 1000
+    Connections {
+        target: context
+        onSplat: addEl(type, angle, distance, name);
+        onClearScreen: updateMap();
+        onChangeRadius: radiusKM = rad;
+    }
+
+    property real radiusKM: 100
     property bool clear: false;
+    property real multiplier: 1
+
+
+    function addEl(type, angle, distence, name){
+        Scripts.createSpriteObjects(type, angle, distence, name);
+    }
+
+    function clear() {
+        updateMap();
+    }
 
     Text {
         id: mapModeIndicatior
@@ -23,21 +37,19 @@ Rectangle {
     }
 
 
-    MouseArea{
-        anchors.fill: parent
-        onClicked: {
-            if (!clear) {
-            Scripts.createSpriteObjects("hosp", 0.785398, 800, "Hosp1");
-            Scripts.createSpriteObjects("hosp", -0.785398, 400, "Hosp2");
-            Scripts.createSpriteObjects("school", 0, 0, "Scl1");
-            clear = true;
-            }
-            else {
-                updateMap()
-                clear = false;
-            }
+    Text {
+        id: radius
+        text: "Radius = " + radiusKM;
+        anchors.top: root.top
+        anchors.left: root.left
+
+        function setModeIndicatorText(newText) {
+            text = "Line Length = " + newText
         }
     }
+
+
+
 
     Rectangle {
          width: (parent.width < parent.height ? parent.width : parent.height) - 20

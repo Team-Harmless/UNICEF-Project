@@ -35,12 +35,13 @@ QList<Place*> Extractor::getSchools(QString filepath)
         for (int index = 0; index < colourArray.size(); index++)
             school->colour[index] = colourArray.at(index).toInt();
 
+
         QJsonObject geometry = schoolObject["geometry"].toObject();
         QJsonArray  coordinates = geometry["coordinates"].toArray();
         // Latitude is y and is first in file.
-        school->coord.setLatitude(coordinates.takeAt(0).toDouble());
+        school->coord.setLatitude(coordinates.at(1).toDouble());
         // Longtitude is x and is second in file.
-        school->coord.setLongitude(coordinates.takeAt(0).toDouble());
+        school->coord.setLongitude(coordinates.at(0).toDouble());
         ret << school;
     }
     return ret;
@@ -75,10 +76,10 @@ QList<Place*> Extractor::getHealthFacilities(QString filepath)
         healthFacility->version = properties["version"].toString();
         healthFacility->upstream = properties["upstream"].toString();
         healthFacility->what3words = properties["what3words"].toString();
-        QJsonObject geometry = properties["geometry"].toObject();
-        QJsonArray  coordinates  = properties["geometry"].toArray();
+        QJsonObject geometry = healthFacilityObject["geometry"].toObject();
+        QJsonArray  coordinates  = geometry["coordinates"].toArray();
         // Latitude is y and is first in file.
-        healthFacility->coord.setLatitude(coordinates.at(0).toDouble());
+        healthFacility->coord.setLatitude(coordinates.at(1).toDouble());
         // Longtitude is x and is second in file.
         healthFacility->coord.setLongitude(coordinates.at(0).toDouble());
         ret << healthFacility;

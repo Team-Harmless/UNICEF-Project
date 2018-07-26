@@ -7,6 +7,8 @@
 #include "place.h"
 #include "quadtree.h"
 #include <QMessageBox>
+#include "context.h"
+#include <QListWidgetItem>
 
 class Worker : public QObject {
     Q_OBJECT
@@ -43,11 +45,13 @@ private:
     void unitUpdate(double mult);
     Search *searcher;
     Quad *locations;
+    Context *context;
     QList<Place*> places;
     QList<Place*> displyedPlaces;
     void applyFilter(QList<Place *> *places);
     QString schoolFile;
     QString hospFile;
+    void on_resultsList_currentRowChanged(int currentRow);
 
 private slots:
     void on_actionImport_Schools_triggered();
@@ -67,6 +71,10 @@ private slots:
     void on_clinicsBox_toggled(bool checked);
 
     void on_actionImport_triggered();
+
+    void on_resultsList_itemClicked(QListWidgetItem *);
+
+    void on_rSlider_sliderReleased();
 
 private:
     Ui::MainWindow *ui;
