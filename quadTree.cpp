@@ -1,18 +1,16 @@
-#include "quadtree.h"
+﻿#include "quadtree.h"
 #include <QDebug>
 
-#define HEIGHT 3
+#define HEIGHT 2
 
 Quad::Quad()
 {
-    topRightPoint= nullptr;
-    bottomLeftPoint = nullptr;
-    heldPlacesPtr = nullptr;
+    topRightPoint= QGeoCoordinate(0, 0);
+    bottomLeftPoint = QGeoCoordinate(0, 0);
     topLeftTree  = nullptr;
     topRightTree = nullptr;
     bottomLeftTree  = nullptr;
     bottomRightTree = nullptr;
-    isEmpty = new bool(true);
 }
 
 Quad:: ~Quad()
@@ -37,16 +35,31 @@ Quad:: ~Quad()
       delete bottomRightTree;
       topLeftTree = nullptr;
   }
-
-  if (heldPlacesPtr)
-  {
-      delete heldPlacesPtr;
-      heldPlacesPtr = nullptr;
-  }
 }
 
+void _recAdd(Quad *quad, Place* place, int height) {
+    if (height == 0) {
+        quad->heldPlacesPtr << place;
+        return;
+    }
+    if (quad->topLeftTree->inBoundary(place->coord)) {
+        _recAdd(quad->topLeftTree, place, height-1);
+        return;
+    }
+    if (quad->topRightTree->inBoundary(place->coord)) {
+        _recAdd(quad->topRightTree, place, height-1);
+        return;
+    }
+    if (quad->bottomLeftTree->inBoundary(place->coord)) {
+        _recAdd(quad->bottomLeftTree, place, height-1);
+        return;
+    }
+    if (quad->bottomRightTree->inBoundary(place->coord)) {
+        _recAdd(quad->bottomRightTree, place, height-1);
+        return;
+    }
+}
 
-/*
 Quad::Quad(QSet<Place*> places)
 {
     double minLongitude = places.values().at(0)->coord.longitude();
@@ -69,7 +82,6 @@ Quad::Quad(QSet<Place*> places)
     bottomLeftPoint = QGeoCoordinate(minLatitude, minLongitude);
     topRightPoint = QGeoCoordinate(maxLatitude, maxLongitude);
 
-    heldPlacesPtr = nullptr;
     height = HEIGHT;
 
     // Base case - do not create new trees and populate list.
@@ -80,11 +92,10 @@ Quad::Quad(QSet<Place*> places)
         bottomLeftTree = nullptr;
         bottomRightTree = nullptr;
 
-        heldPlacesPtr = new QSet<Place *>();
 
-        foreach (Place * placePtr, places)
-            if (inBoundary(placePtr->coord))
-                heldPlacesPtr->insert(placePtr);
+//        foreach (Place * placePtr, places)
+//            if (inBoundary(placePtr->coord))
+//                heldPlacesPtr->insert(placePtr);
        return;
     } // if
 
@@ -92,9 +103,9 @@ Quad::Quad(QSet<Place*> places)
 
     // Create additional points in order to make subtrees.
     QGeoCoordinate topLeftPoint
-            (topRightPoint.latitude(), bottomLeftPoint.longitude());
-    QGeoCoordinate bottomRightPoint
             (bottomLeftPoint.latitude(), topRightPoint.longitude());
+    QGeoCoordinate bottomRightPoint
+            (topRightPoint.latitude(), bottomLeftPoint.longitude());
     QGeoCoordinate topMidPoint =
             findMidPoint(topLeftPoint, topRightPoint);
     QGeoCoordinate bottomMidPoint =
@@ -115,16 +126,16 @@ Quad::Quad(QSet<Place*> places)
             (bottomLeftPoint, centrePoint, height - 1, places);
     bottomRightTree = new Quad
             (bottomMidPoint, rightMidPoint, height - 1, places);
+    foreach(Place* place, places)
+        _recAdd(this, place, HEIGHT);
 }
-*/
 
-Quad::Quad(QGeoCoordinate *givenBottomLeft, QGeoCoordinate *givenTopRight, int givenHeight, QSet<Place *> givenPlaces)
+Quad::Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight
+           , int givenHeight, QSet<Place *> givenPlaces)
 {
-    isEmpty = new bool(true);
-    heldPlacesPtr = nullptr;
     bottomLeftPoint = givenBottomLeft;
     topRightPoint = givenTopRight;
-    height = new int(givenHeight);
+    height = givenHeight;
 
     // Base case - do not create new trees and populate list.
     if (givenHeight == 0)
@@ -134,35 +145,30 @@ Quad::Quad(QGeoCoordinate *givenBottomLeft, QGeoCoordinate *givenTopRight, int g
         bottomLeftTree = nullptr;
         bottomRightTree = nullptr;
 
-        heldPlacesPtr = new QSet<Place *>();
 
-        foreach (Place * placePtr, givenPlaces)
-            if (inBoundary(placePtr->coord))
-                heldPlacesPtr->insert(placePtr);
-
-        if (heldPlacesPtr->isEmpty())
-        {
-            heldPlacesPtr = nullptr;
-        } // if
-        else
-        {
-            isEmpty = new bool(false);
-        }
-
+//        foreach (Place * placePtr, givenPlaces)
+//            if (inBoundary(placePtr->coord))
+//                heldPlacesPtr << placePtr;
        return;
     } // if
 
     // Step case create new trees and don't populate lists.
 
     // Create additional points in order to make subtrees.
-    QGeoCoordinate *topLeftPoint = new QGeoCoordinate(topRightPoint->latitude(), bottomLeftPoint->longitude());
-    QGeoCoordinate *bottomRightPoint = new QGeoCoordinate(bottomLeftPoint->latitude(), topRightPoint->longitude());
-    QGeoCoordinate *topMidPoint = new QGeoCoordinate(findMidPoint(*topLeftPoint, *topRightPoint));
-    QGeoCoordinate *bottomMidPoint = new QGeoCoordinate (findMidPoint(*bottomLeftPoint, *bottomRightPoint));
-    QGeoCoordinate *leftMidPoint = new QGeoCoordinate(findMidPoint(*bottomLeftPoint, *topLeftPoint));
-    QGeoCoordinate *rightMidPoint = new QGeoCoordinate(findMidPoint(*bottomRightPoint, *topRightPoint));
-    QGeoCoordinate *centrePoint = new QGeoCoordinate(findMidPoint(*leftMidPoint, *rightMidPoint));
-
+    QGeoCoordinate topLeftPoint
+            (bottomLeftPoint.latitude(), topRightPoint.longitude());
+    QGeoCoordinate bottomRightPoint
+            (topRightPoint.latitude(), bottomLeftPoint.longitude());
+    QGeoCoordinate topMidPoint =
+            findMidPoint(topLeftPoint, topRightPoint);
+    QGeoCoordinate bottomMidPoint =
+            findMidPoint(bottomLeftPoint, bottomRightPoint);
+    QGeoCoordinate leftMidPoint =
+            findMidPoint(bottomLeftPoint, topLeftPoint);
+    QGeoCoordinate rightMidPoint =
+            findMidPoint(bottomRightPoint, topRightPoint);
+    QGeoCoordinate centrePoint =
+            findMidPoint(leftMidPoint, rightMidPoint);
     // Create subtrees.
     topLeftTree = new Quad
             (leftMidPoint, topMidPoint, givenHeight - 1, givenPlaces);
@@ -172,29 +178,34 @@ Quad::Quad(QGeoCoordinate *givenBottomLeft, QGeoCoordinate *givenTopRight, int g
             (bottomLeftPoint, centrePoint, givenHeight - 1, givenPlaces);
     bottomRightTree = new Quad
             (bottomMidPoint, rightMidPoint, givenHeight - 1, givenPlaces);
-    isEmpty =  new bool(!(!*(topLeftTree->isEmpty) || !*(topRightTree->isEmpty) || !*(bottomLeftTree->isEmpty)|| !*(bottomRightTree->isEmpty)));
 }
 
-QSet<Place *> Quad::search(QGeoCoordinate *givenBottomLeft, QGeoCoordinate *givenTopRight)
+QSet<Place *> Quad::search(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight)
 {
     return _search(givenBottomLeft, givenTopRight, HEIGHT);
 }
 
-QSet<Place *> Quad::_search(QGeoCoordinate *givenBottomLeft
-                           , QGeoCoordinate *givenTopRight
+double max(double a, double b) { return a > b ? a : b; }
+double min(double a, double b) { return a < b ? a : b; }
+
+
+QSet<Place *> Quad::_search(QGeoCoordinate givenBottomLeft
+                           , QGeoCoordinate givenTopRight
                            , int givenHeight)
 {
-    QSet<Place*> foundPlaces = QSet<Place*>();
+    qDebug() << "Search diagonal: " << givenBottomLeft.distanceTo(givenTopRight)/ 1000;
+
+    QSet<Place*> foundPlaces;
 
     if (givenHeight == 0)
     {
-        if (!heldPlacesPtr)
-        if (heldPlacesPtr == nullptr) return QSet<Place*>();
         QSet<Place*> foundPlaces;
-        foreach (Place *placePtr, *heldPlacesPtr)
-            if (placePtr != nullptr)
-                if (inBoundary(placePtr->coord))
-                    foundPlaces.insert(placePtr);
+        foreach (Place *placePtr, heldPlacesPtr)
+            if (inBoundary(placePtr->coord, givenBottomLeft, givenTopRight)) {
+                foundPlaces.insert(placePtr);
+                    qDebug() << placePtr->classType;
+                }
+
         return foundPlaces;
     } // if
 
@@ -202,55 +213,99 @@ QSet<Place *> Quad::_search(QGeoCoordinate *givenBottomLeft
 
     // For each subtree adjust search boundaries to match its size
     // and invoke search on it
-    if (!*(topLeftTree->isEmpty))
-    {
+    QGeoCoordinate tlp
+            (givenBottomLeft.latitude(), givenTopRight.longitude());
+    QGeoCoordinate brp
+            (givenTopRight.latitude(), givenBottomLeft.longitude());
 
-    QPair<QGeoCoordinate*, QGeoCoordinate*> topLeftCoordinates
-            = adjustSearchBoundaries(givenBottomLeft, givenTopRight);
-    foundPlaces = topLeftTree->
-            _search(topLeftCoordinates.first, topLeftCoordinates.second
-                    ,givenHeight-1);
+
+    if (topLeftTree->inBoundary(tlp)) {
+        if(topLeftTree->inBoundary(brp)) {
+            QSet<Place*> tmp = topLeftTree->_search(givenBottomLeft, givenTopRight, givenHeight - 1);
+            foundPlaces = foundPlaces.unite(tmp);
+        }
+        else
+        {
+            QGeoCoordinate newBLP = QGeoCoordinate(tlp.latitude(),
+                                       max(givenBottomLeft.longitude(), topLeftTree->bottomLeftPoint.longitude()));
+            QGeoCoordinate newTRP = QGeoCoordinate(min(givenTopRight.latitude(), topLeftTree->topRightPoint.latitude()),
+                                        tlp.longitude());
+        QSet<Place*> tmp = topLeftTree->_search(newBLP, newTRP, givenHeight - 1);
+        foundPlaces = foundPlaces.unite(tmp);
+        }
+
     }
 
-    if (!*(topRightTree->isEmpty))
-    {
-    QPair<QGeoCoordinate*, QGeoCoordinate*> topRightCoordinates
-            = adjustSearchBoundaries(givenBottomLeft, givenTopRight);
-    foundPlaces.unite(topRightTree->_search(topRightCoordinates.first
-                                           , topRightCoordinates.second
-                                            ,givenHeight-1));
+    if (bottomLeftTree->inBoundary(givenBottomLeft)) {
+        QGeoCoordinate blp = givenBottomLeft;
+        QGeoCoordinate trp = QGeoCoordinate(min(givenTopRight.latitude(), bottomLeftTree->topRightPoint.latitude()),
+                                            min(givenTopRight.longitude(), bottomLeftTree->topRightPoint.longitude()));
+        QSet<Place*> tmp = bottomLeftTree->_search(blp, trp, givenHeight - 1);
+        foundPlaces = foundPlaces.unite(tmp);
     }
 
-    if (!*(bottomLeftTree->isEmpty))
-    {
-    QPair<QGeoCoordinate*, QGeoCoordinate*> bottomLeftCoordinates
-            = adjustSearchBoundaries(givenBottomLeft, givenTopRight);
-    foundPlaces.unite(bottomLeftTree->_search(bottomLeftCoordinates.first
-                                             , bottomLeftCoordinates.second
-                                              ,givenHeight-1));
+    if (topRightTree->inBoundary(givenTopRight)) {
+        if (topRightTree->inBoundary(givenBottomLeft)) {
+            QSet<Place*> tmp = topRightTree->_search(givenBottomLeft, givenTopRight, givenHeight - 1);
+            foundPlaces = foundPlaces.unite(tmp);
+        }
+        else {
+            QGeoCoordinate blp = QGeoCoordinate(max(givenBottomLeft.latitude(), topRightTree->bottomLeftPoint.latitude()),
+                                                max(givenBottomLeft.longitude(), topRightTree->bottomLeftPoint.longitude()));
+            QSet<Place*> tmp = topRightTree->_search(blp, givenTopRight, givenHeight - 1);
+            foundPlaces = foundPlaces.unite(tmp);
+        }
+
     }
 
-    if (!*(bottomRightTree->isEmpty))
-    {
-    QPair<QGeoCoordinate*, QGeoCoordinate*> bottomRightCoordinates
-            = adjustSearchBoundaries(givenBottomLeft, givenTopRight);
-    foundPlaces.unite(bottomRightTree->_search(bottomRightCoordinates.first
-                                              , bottomRightCoordinates.second
-                                               ,givenHeight-1));
+    if (bottomRightTree->inBoundary(brp)) {
+        QGeoCoordinate blp = QGeoCoordinate(max(bottomRightTree->bottomLeftPoint.latitude(), givenBottomLeft.latitude()),
+                                            brp.longitude());
+        QGeoCoordinate trp = QGeoCoordinate(brp.latitude(),
+                                            min(bottomRightTree->topRightPoint.longitude(), givenTopRight.longitude()));
+        //foundPlaces.unite(bottomRightTree->_search(blp, trp, givenHeight - 1));
+        QSet<Place*> tmp = bottomRightTree->_search(blp, trp, givenHeight - 1);
+        foundPlaces = foundPlaces.unite(tmp);
     }
+
+
+
+//    QPair<QGeoCoordinate, QGeoCoordinate> topLeftCoordinates
+//            = adjustSearchBoundaries(givenBottomLeft, givenTopRight);
+//    foundPlaces = topLeftTree->
+//            _search(topLeftCoordinates.first, topLeftCoordinates.second
+//                    ,givenHeight-1);
+
+//    QPair<QGeoCoordinate, QGeoCoordinate> topRightCoordinates
+//            = adjustSearchBoundaries(givenBottomLeft, givenTopRight);
+//    foundPlaces.unite(topRightTree->_search(topRightCoordinates.first
+//                                           , topRightCoordinates.second
+//                                            ,givenHeight-1));
+
+//    QPair<QGeoCoordinate, QGeoCoordinate> bottomLeftCoordinates
+//            = adjustSearchBoundaries(givenBottomLeft, givenTopRight);
+//    foundPlaces.unite(bottomLeftTree->_search(bottomLeftCoordinates.first
+//                                             , bottomLeftCoordinates.second
+//                                              ,givenHeight-1));
+
+//    QPair<QGeoCoordinate, QGeoCoordinate> bottomRightCoordinates
+//            = adjustSearchBoundaries(givenBottomLeft, givenTopRight);
+//    foundPlaces.unite(bottomRightTree->_search(bottomRightCoordinates.first
+//                                              , bottomRightCoordinates.second
+//                                               ,givenHeight-1));
 
     return foundPlaces;
 } // search
 
-QPair<QGeoCoordinate*, QGeoCoordinate*> Quad::adjustSearchBoundaries(
-        QGeoCoordinate *givenBottomLeft, QGeoCoordinate *givenTopRight)
+QPair<QGeoCoordinate, QGeoCoordinate> Quad::adjustSearchBoundaries(
+        QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight)
 {
-    if (isOutsideBottomLeft(*givenBottomLeft))
+    if (isOutsideBottomLeft(givenBottomLeft))
         givenBottomLeft = bottomLeftPoint;
-    if(isOutsideTopRight(*givenTopRight))
+    if(isOutsideTopRight(givenTopRight))
         givenTopRight = topRightPoint;
 
-    return QPair<QGeoCoordinate*, QGeoCoordinate*> (givenBottomLeft
+    return QPair<QGeoCoordinate, QGeoCoordinate> (givenBottomLeft
                                                   , givenTopRight);
 }
 
@@ -258,28 +313,28 @@ QPair<QGeoCoordinate*, QGeoCoordinate*> Quad::adjustSearchBoundaries(
 // Check if current quadtree contains the point
 bool Quad::inBoundary(QGeoCoordinate givenPoint)
 {
-    return inBoundary(givenPoint, *bottomLeftPoint, *topRightPoint);
+    return inBoundary(givenPoint, bottomLeftPoint, topRightPoint);
 } // non-static inBoundary
 
 bool Quad::isOutsideTopRight(QGeoCoordinate givenPoint)
 {
-    return givenPoint.longitude() > topRightPoint->longitude()
-            || givenPoint.latitude() > topRightPoint->latitude();
+    return givenPoint.longitude() > topRightPoint.longitude()
+            || givenPoint.latitude() > topRightPoint.latitude();
 }
 
 bool Quad::isOutsideBottomLeft(QGeoCoordinate givenPoint)
 {
-    return givenPoint.longitude() < bottomLeftPoint->longitude()
-            || givenPoint.latitude() < bottomLeftPoint->latitude();
+    return givenPoint.longitude() < bottomLeftPoint.longitude()
+            || givenPoint.latitude() < bottomLeftPoint.latitude();
 }
  
-bool Quad::inBoundary(QGeoCoordinate givenPoint, QGeoCoordinate bottomLeftPoint
-                      , QGeoCoordinate topRightPoint)
+bool Quad::inBoundary(QGeoCoordinate givenPoint, QGeoCoordinate BottomLeftPoint
+                      , QGeoCoordinate TopRightPoint)
 {
-    return (givenPoint.longitude() >= bottomLeftPoint.longitude()
-        && givenPoint.latitude() >= bottomLeftPoint.latitude()
-        && givenPoint.longitude() <= topRightPoint.longitude()
-        && givenPoint.latitude() <= topRightPoint.latitude());
+    return (givenPoint.longitude() >= BottomLeftPoint.longitude()
+        && givenPoint.latitude() >= BottomLeftPoint.latitude()
+        && givenPoint.longitude() <= TopRightPoint.longitude()
+        && givenPoint.latitude() <= TopRightPoint.latitude());
 } // static inBoundary
 
 QGeoCoordinate Quad::findMidPoint(QGeoCoordinate firstPoint
