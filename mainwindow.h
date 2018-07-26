@@ -8,6 +8,7 @@
 #include "quadtree.h"
 #include <QMessageBox>
 #include "context.h"
+#include <QListWidgetItem>
 
 class Worker : public QObject {
     Q_OBJECT
@@ -71,6 +72,8 @@ private slots:
     void on_actionImport_triggered();
 
     void on_resultsList_currentRowChanged(int currentRow);
+
+    void on_resultsList_itemClicked(QListWidgetItem *);
 
 private:
     Ui::MainWindow *ui;

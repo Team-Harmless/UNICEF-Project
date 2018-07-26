@@ -20,6 +20,7 @@ Context::Context(Quad *placesQuad, Place * newOrigin
 void Context::update(Quad *placesQuad, Place *newOrigin
                      , double radius, enum Comparisons::Metric metric)
 {
+    polarCoordinates.clear();
    // Empty list of polars if the origin has changed because
    // now distances  are different.
    // If the required radius is smaller, clear the list as well because
@@ -36,21 +37,18 @@ void Context::update(Quad *placesQuad, Place *newOrigin
 
    QGeoCoordinate originPoint = origin->coord;
 
-   double latitudeDeviation = radius / kmPerLatitude;
-   double longitudeDeviation = radius / kmPerLongitude;
+   QGeoCoordinate bottomLeftBound = originPoint.atDistanceAndAzimuth(radius*1000, 270).atDistanceAndAzimuth(radius*1000,180);
+   QGeoCoordinate topRightBound = originPoint.atDistanceAndAzimuth(radius*1000, 90).atDistanceAndAzimuth(radius*1000,0);
 
-   QGeoCoordinate bottomLeftBound(originPoint.latitude() - latitudeDeviation
-                                  , originPoint.longitude() - longitudeDeviation);
-   QGeoCoordinate topRightBound(originPoint.latitude() + latitudeDeviation
-                                  , originPoint.longitude() + longitudeDeviation);
+   qDebug() << radius;
 
    qDebug() << "Bottom Left: " << bottomLeftBound.latitude() << ", " << bottomLeftBound.longitude();
    qDebug() << "Top Right: " << topRightBound.latitude() << ", " << topRightBound.longitude();
 
-   qDebug() << "Big Bound TL: " << placesQuad->topRightPoint.latitude() << ", " <<
+   qDebug() << "Big Bound TR: " << placesQuad->topRightPoint.latitude() << ", " <<
                placesQuad->topRightPoint.longitude();
 
-   qDebug() << "Big Bound BR: " << placesQuad->bottomLeftPoint.latitude() << ", " <<
+   qDebug() << "Big Bound BL: " << placesQuad->bottomLeftPoint.latitude() << ", " <<
                placesQuad->bottomLeftPoint.longitude();
 
    QSet<Place*> relevantPlaces = placesQuad->search(bottomLeftBound, topRightBound);

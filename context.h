@@ -38,9 +38,6 @@ private:
     // Cache results in order to not recompute them every time.
     QHash<QPair<QGeoCoordinate,QGeoCoordinate>, double> cachedDistances;
 
-    double kmPerLatitude = 100; // actually average is 111
-    double kmPerLongitude = 10; // actually between 19 and 43
-
 };
 
 #endif // CONTEXT_H

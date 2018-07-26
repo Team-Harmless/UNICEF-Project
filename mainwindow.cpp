@@ -13,7 +13,7 @@ QThread *searchThread = NULL;
 QThread *importThread = NULL;
 QThread *qmlBuildThread = NULL;
 
-double rad;
+double rad = 100;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -65,7 +65,8 @@ void MainWindow::unitUpdate(double mult) {
 void MainWindow::on_rSlider_valueChanged(int value)
 {
     ui->radiusLable->setText(QString::number((double)value / 10 * distanceMultiplier, 'g', value > 100 ? 3 : 2));
-    rad = (double)value / 10.0;
+    rad = (double)value /10;
+    //if (!displyedPlaces.isEmpty()) on_resultsList_itemClicked(NULL);
 }
 
 void MainWindow::on_kmBox_toggled(bool checked) { if (checked) unitUpdate(1); }
@@ -193,4 +194,9 @@ void MainWindow::on_resultsList_currentRowChanged(int currentRow)
                     Comparisons::StrightLineDistance);
 
     qDebug() << context->polarCoordinates.count();
+}
+
+void MainWindow::on_resultsList_itemClicked(QListWidgetItem*)
+{
+    on_resultsList_currentRowChanged(ui->resultsList->currentRow());
 }

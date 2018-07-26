@@ -20,19 +20,21 @@ class Quad
 
 
     // Contains details of node
-    QSet<Place *> *heldPlacesPtr;
+
 
     // Children of this tree
-    Quad *topLeftTree;
-    Quad *topRightTree;
-    Quad *bottomLeftTree;
-    Quad *bottomRightTree;
+
 
     // height of tree
     int height;
 
 public:
+    Quad *topLeftTree;
+    Quad *topRightTree;
+    Quad *bottomLeftTree;
+    Quad *bottomRightTree;
     QGeoCoordinate bottomLeftPoint;
+    QSet<Place *> heldPlacesPtr;
     QGeoCoordinate topRightPoint;
     Quad();
     ~Quad();
