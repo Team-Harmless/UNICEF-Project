@@ -34,6 +34,10 @@ double Comparisons::graphDistence(QGeoCoordinate pointA, QGeoCoordinate pointB)
             return 0;
     }
 }
+double Comparisons::graphDistence(Place *pointA, Place *pointB)
+{
+    return graphDistence(pointA->coord, pointB->coord);
+}
 
 QList<double> Comparisons::graphDistence(QGeoCoordinate pointA, QList<QGeoCoordinate> pointB)
 {
@@ -47,6 +51,12 @@ QList<double> Comparisons::graphDistence(QGeoCoordinate pointA, QList<QGeoCoordi
         default:
             return QList<double>();
     }
+}
+
+QList<double> Comparisons::graphDistence(Place *pointA, QList<Place *> pointB)
+{
+    return graphDistence(pointA->coord, [](QList<Place*> points) -> QList<QGeoCoordinate>
+    {QList<QGeoCoordinate> ret; foreach (Place* pl, points) ret << pl->coord; return ret;}(pointB));
 }
 
 QJsonDocument Comparisons::webRequester(QGeoCoordinate pointA, QList<QGeoCoordinate> pointB) {
