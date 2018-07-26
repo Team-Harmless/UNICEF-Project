@@ -6,6 +6,7 @@
 
 #include <quadtree.h>
 #include <place.h>
+#include <comparisons.h>
 
 struct Polar
 {
@@ -18,9 +19,12 @@ class Context
 {
 public:
     Context();
-    Context(Quad *placesQuad, Place * origin, double radius);
-    void update(Quad *placesQuad, Place * origin, double radius);
+    Context(Quad *placesQuad, Place * origin
+            , double radius, enum Comparisons::Metric metric);
+    void update(Quad *placesQuad, Place * origin
+                , double radius, enum Comparisons::Metric metric);
     QList<Polar> polarCoordinates;
+    double currentRadius;
 private:
     Quad *placesQuad;
     QHash<QPair<QGeoCoordinate,QGeoCoordinate>, double> cachedDistances;

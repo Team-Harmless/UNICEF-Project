@@ -8,14 +8,17 @@ Context::Context()
 }
 
 
-Context::Context(Quad *placesQuad, Place * origin, double radius) : Context()
+Context::Context(Quad *placesQuad, Place * origin
+                 , double radius, enum Comparisons::Metric metric) : Context()
 {
-    update(placesQuad,origin,radius);
+    update(placesQuad, origin, radius, metric);
 }
 
 
-void Context::update(Quad *placesQuad, Place *origin, double radius)
+void Context::update(Quad *placesQuad, Place *origin
+                     , double radius, enum Comparisons::Metric metric)
 {
+   currentRadius = radius; // TODO : Check for previous radius.
    QGeoCoordinate originPoint = origin->coord;
 
    double latitudeDeviation = radius / kmPerLatitude;
@@ -28,20 +31,42 @@ void Context::update(Quad *placesQuad, Place *origin, double radius)
 
    QSet<Place*> relevantPlaces = placesQuad->search(bottomLeftBound, topRightBound);
 
-   QList <QGeoCoordinate> placesToSearch;
+   QList <QGeoCoordinate> placesToSearch = QList<QGeoCoordinate>();
 
+   Polar polarCoordinate;
    foreach (Place * placePtr, relevantPlaces)
    {
        QPair<QGeoCoordinate, QGeoCoordinate> fromToPair(originPoint, placePtr->coord);
        if (cachedDistances.contains(fromToPair))
        {
-          Polar polarCoordinate;
           polarCoordinate.place = placePtr;
-          double angle =// QGeo one to another.
-          polarCoordinate.angle =
-       }
+          polarCoordinate.distance = cachedDistances[fromToPair];
+          polarCoordinates.append(polarCoordinate);
+       } // if
+       else
+           placesToSearch.append(placePtr->coord);
+   } //  foreach
 
-   }
+   // Get accurate distances from maps API.
+   Comparisons  comparisons = Comparisons();
+
+   comparisons.metric = metric;
+   QList<double> searchResults = comparisons.graphDistence(origin->coord, placesToSearch);
+
+   for (int index = 0; index <
+   foreach (double result, searchResults)
+   {
+       polarCoordinate.distance = result;
+       // TODO : fix
+       polarCoordinate.angle = originPoint.azimuthTo(placePtr->coord);
+
+       // Cache result.
+       QPair<QGeoCoordinate, QGeoCoordinate>
+               fromToPair(originPoint, placePtr->coord);
+       cachedDistances[fromToPair] = result;
+   } // foreach
+
+
 }
 
 

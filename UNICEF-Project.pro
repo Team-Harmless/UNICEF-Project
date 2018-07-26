@@ -37,7 +37,7 @@ SOURCES += \
         search.cpp \
         comparisons.cpp \
         quadTree.cpp \
-    context.cpp
+        context.cpp
 HEADERS += \
         mainwindow.h \
         extractdata.h \
@@ -47,7 +47,7 @@ HEADERS += \
         search.h \
         comparisons.h \
         quadtree.h \
-    context.h
+        context.h
 FORMS += \
         mainwindow.ui
 
