@@ -8,6 +8,7 @@
 #include <place.h>
 #include <comparisons.h>
 
+// Contains the place with its polar coordinates.
 struct Polar
 {
     Place * place;
@@ -18,15 +19,23 @@ struct Polar
 class Context
 {
 public:
-    Context();
-    Context(Quad *placesQuad, Place * origin
+    Context(); // Initiate object.
+
+    // Create object and do a search.
+    Context(Quad *placesQuad, Place * newOrigin
             , double radius, enum Comparisons::Metric metric);
-    void update(Quad *placesQuad, Place * origin
+
+    // Do a search. It updates public members.
+    void update(Quad *placesQuad, Place * newOrigin
                 , double radius, enum Comparisons::Metric metric);
-    QList<Polar> polarCoordinates;
-    double currentRadius;
+
+
+    QList<Polar> polarCoordinates; // Contains points for the UI.
+    double currentRadius; // Keep track of the requested radius.
 private:
-    Quad *placesQuad;
+    Place * origin; // If origin changes polar list is refreshed.
+
+    // Cache results in order to not recompute them every time.
     QHash<QPair<QGeoCoordinate,QGeoCoordinate>, double> cachedDistances;
 
     double kmPerLatitude = 100; // actually average is 111
