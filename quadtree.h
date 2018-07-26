@@ -17,8 +17,7 @@ using namespace std;
 class Quad
 {
     // Hold details of the boundary of this node
-    QGeoCoordinate bottomLeftPoint;
-    QGeoCoordinate topRightPoint;
+
 
     // Contains details of node
     QSet<Place *> *heldPlacesPtr;
@@ -33,6 +32,8 @@ class Quad
     int height;
 
 public:
+    QGeoCoordinate bottomLeftPoint;
+    QGeoCoordinate topRightPoint;
     Quad();
     ~Quad();
     Quad(QSet<Place*> places);
@@ -49,6 +50,9 @@ public:
     bool isOutsideBottomLeft(QGeoCoordinate givenPoint);
     QPair<QGeoCoordinate, QGeoCoordinate> adjustSearchBoundaries(
             QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight);
+
+    QSet<Place *> _search(QGeoCoordinate givenBottomLeft
+                        , QGeoCoordinate givenTopRight, int givenHeight);
 
 };
 

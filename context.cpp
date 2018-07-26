@@ -1,4 +1,5 @@
 #include "context.h"
+#include <QDebug>
 
 Context::Context()
 {
@@ -43,6 +44,15 @@ void Context::update(Quad *placesQuad, Place *newOrigin
    QGeoCoordinate topRightBound(originPoint.latitude() + latitudeDeviation
                                   , originPoint.longitude() + longitudeDeviation);
 
+   qDebug() << "Bottom Left: " << bottomLeftBound.latitude() << ", " << bottomLeftBound.longitude();
+   qDebug() << "Top Right: " << topRightBound.latitude() << ", " << topRightBound.longitude();
+
+   qDebug() << "Big Bound TL: " << placesQuad->topRightPoint.latitude() << ", " <<
+               placesQuad->topRightPoint.longitude();
+
+   qDebug() << "Big Bound BR: " << placesQuad->bottomLeftPoint.latitude() << ", " <<
+               placesQuad->bottomLeftPoint.longitude();
+
    QSet<Place*> relevantPlaces = placesQuad->search(bottomLeftBound, topRightBound);
 
 
@@ -54,13 +64,13 @@ void Context::update(Quad *placesQuad, Place *newOrigin
    foreach (Place * placePtr, relevantPlaces)
    {
        QPair<QGeoCoordinate, QGeoCoordinate> fromToPair(originPoint, placePtr->coord);
-       if (cachedDistances.contains(fromToPair))
-       {
-          polarCoordinate.place = placePtr;
-          polarCoordinate.distance = cachedDistances[fromToPair];
-          polarCoordinates.append(polarCoordinate);
-       } // if
-       else
+       //if (cachedDistances.contains(fromToPair))
+       //{
+       //   polarCoordinate.place = placePtr;
+       //   polarCoordinate.distance = cachedDistances[fromToPair];
+       //   polarCoordinates.append(polarCoordinate);
+       //} // if
+       //else
            placesToSearch.append(placePtr);
    } //  foreach
 
@@ -79,7 +89,7 @@ void Context::update(Quad *placesQuad, Place *newOrigin
        // Cache new distances.
        QPair<QGeoCoordinate, QGeoCoordinate>
                fromToPair(originPoint, placePtr->coord);
-       cachedDistances[fromToPair] = result;
+       //cachedDistances[fromToPair] = result;
 
        // Add new place to member list.
        polarCoordinate.place = placePtr;

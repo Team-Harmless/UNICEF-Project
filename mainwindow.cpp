@@ -11,6 +11,9 @@
 double distanceMultiplier = 1;
 QThread *searchThread = NULL;
 QThread *importThread = NULL;
+QThread *qmlBuildThread = NULL;
+
+double rad;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -18,8 +21,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     searcher = new Search();
     locations = NULL;
+    context = new Context();
     searchThread = new QThread();
     importThread = new QThread();
+    qmlBuildThread = new QThread();
     ui->setupUi(this);
     ui->splitter->setStretchFactor(0,0);
     ui->splitter->setStretchFactor(1,1);
@@ -34,6 +39,8 @@ MainWindow::~MainWindow()
     }
     while (searchThread->isRunning()) ;;
     delete searchThread;
+    delete importThread;
+    delete qmlBuildThread;
     delete searcher;
     delete ui;
 }
@@ -58,6 +65,7 @@ void MainWindow::unitUpdate(double mult) {
 void MainWindow::on_rSlider_valueChanged(int value)
 {
     ui->radiusLable->setText(QString::number((double)value / 10 * distanceMultiplier, 'g', value > 100 ? 3 : 2));
+    rad = (double)value / 10.0;
 }
 
 void MainWindow::on_kmBox_toggled(bool checked) { if (checked) unitUpdate(1); }
@@ -169,11 +177,20 @@ void MainWindow::on_actionImport_triggered()
         places += healthFacilities;
     }
     if (schoolFile != "") {
-        QList<Place*> schools = Extractor::getHealthFacilities(schoolFile);
+        QList<Place*> schools = Extractor::getSchools(schoolFile);
         places += schools;
     }
     searcher->addData(places);
     locations = new Quad(places.toSet());
     ui->actionImport->setEnabled(false);
     on_searchBar_textChanged("");
+}
+
+void MainWindow::on_resultsList_currentRowChanged(int currentRow)
+{
+    //qDebug() << displyedPlaces.at(currentRow)->name;
+    context->update(locations, displyedPlaces.at(currentRow),rad ,
+                    Comparisons::StrightLineDistance);
+
+    qDebug() << context->polarCoordinates.count();
 }
