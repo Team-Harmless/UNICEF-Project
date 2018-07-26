@@ -39,6 +39,21 @@ void Context::update(Quad *placesQuad, Place *newOrigin
    QGeoCoordinate bottomLeftBound = originPoint.atDistanceAndAzimuth(radius*1000, 270).atDistanceAndAzimuth(radius*1000,180);
    QGeoCoordinate topRightBound = originPoint.atDistanceAndAzimuth(radius*1000, 90).atDistanceAndAzimuth(radius*1000,0);
 
+   if (bottomLeftBound.latitude() < placesQuad->bottomLeftPoint.latitude()) {
+        bottomLeftBound.setLatitude( placesQuad->bottomLeftPoint.latitude());
+   }
+
+   if (bottomLeftBound.longitude() < placesQuad->bottomLeftPoint.longitude()) {
+       bottomLeftBound.setLongitude(placesQuad->bottomLeftPoint.longitude());
+   }
+
+   if(topRightBound.latitude() > placesQuad->topRightPoint.latitude()) {
+       topRightBound.setLatitude(placesQuad->topRightPoint.latitude());
+   }
+   if (topRightBound.longitude() > placesQuad->topRightPoint.longitude()) {
+       topRightBound.setLongitude(placesQuad->topRightPoint.longitude());
+   }
+
    qDebug() << radius;
 
    qDebug() << "Bottom Left: " << bottomLeftBound.latitude() << ", " << bottomLeftBound.longitude();

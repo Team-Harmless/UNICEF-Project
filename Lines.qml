@@ -12,6 +12,8 @@ Rectangle {
     property real distance: 0
     property real angle: 0
 
+    color: "darkblue"
+
     height: Scripts.kmToPx(distance, 2 * parent.radiusKM, (parent.width < parent.height ? parent.width : parent.height) - 20)
     width: 6
 

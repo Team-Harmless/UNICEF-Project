@@ -1,7 +1,7 @@
 #include "quadtree.h"
 #include <QDebug>
 
-#define HEIGHT 3
+#define HEIGHT 8
 
 Quad::Quad()
 {
@@ -186,6 +186,9 @@ QSet<Place *> Quad::search(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenT
     return _search(givenBottomLeft, givenTopRight, HEIGHT);
 }
 
+double max(double a, double b) { return a > b ? a : b; }
+double min(double a, double b) { return a < b ? a : b; }
+
 QSet<Place *> Quad::_search(QGeoCoordinate givenBottomLeft
                            , QGeoCoordinate givenTopRight
                            , int givenHeight)
@@ -210,8 +213,10 @@ QSet<Place *> Quad::_search(QGeoCoordinate givenBottomLeft
 
 
     if (topLeftTree->inBoundary(QGeoCoordinate(givenBottomLeft.latitude(), givenTopRight.longitude()))) {
-        QGeoCoordinate blp = QGeoCoordinate(givenBottomLeft.latitude(), topLeftTree->bottomLeftPoint.longitude());
-        QGeoCoordinate trp = QGeoCoordinate(topLeftTree->topRightPoint.latitude(), givenTopRight.longitude());
+        QGeoCoordinate blp = QGeoCoordinate(max(givenBottomLeft.latitude(), topLeftTree->bottomLeftPoint.latitude()),
+                                            max(givenBottomLeft.latitude(), topLeftTree->bottomLeftPoint.longitude()));
+        QGeoCoordinate trp = QGeoCoordinate(min(topLeftTree->topRightPoint.latitude(), givenTopRight.latitude()),
+                                            min(givenTopRight.longitude(), topLeftTree->topRightPoint.longitude()));
         QSet<Place*> tmp = topLeftTree->_search(blp, trp, givenHeight - 1);
         foundPlaces = foundPlaces.unite(tmp);
         //qDebug() << "Places found in TL at hight " << givenHeight << " is " << foundPlaces.count();
@@ -235,8 +240,10 @@ QSet<Place *> Quad::_search(QGeoCoordinate givenBottomLeft
     }
 
     if (bottomRightTree->inBoundary(QGeoCoordinate(givenTopRight.latitude(), givenBottomLeft.longitude()))) {
-        QGeoCoordinate blp = QGeoCoordinate(bottomRightTree->bottomLeftPoint.latitude(), givenBottomLeft.longitude());
-        QGeoCoordinate trp = QGeoCoordinate(givenTopRight.latitude(), bottomRightTree->topRightPoint.longitude());
+        QGeoCoordinate blp = QGeoCoordinate(max(bottomRightTree->bottomLeftPoint.latitude(), givenBottomLeft.latitude()),
+                                            max(givenBottomLeft.longitude(), bottomRightTree->bottomLeftPoint.longitude()));
+        QGeoCoordinate trp = QGeoCoordinate(min(givenTopRight.latitude(), bottomRightTree->topRightPoint.latitude()),
+                                            min(bottomRightTree->topRightPoint.longitude(), givenTopRight.longitude()));
         //foundPlaces.unite(bottomRightTree->_search(blp, trp, givenHeight - 1));
         QSet<Place*> tmp = bottomRightTree->_search(blp, trp, givenHeight - 1);
         foundPlaces = foundPlaces.unite(tmp);

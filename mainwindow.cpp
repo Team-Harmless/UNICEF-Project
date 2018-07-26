@@ -64,7 +64,7 @@ void MainWindow::unitUpdate(double mult) {
 
 void MainWindow::on_rSlider_valueChanged(int value)
 {
-    ui->radiusLable->setText(QString::number((double)value / 10 * distanceMultiplier, 'g', value > 100 ? 3 : 2));
+    ui->radiusLable->setText(QString::number((double)value / 10 * distanceMultiplier, 'g', value > 100 ? 4 : 5));
     rad = (double)value /10;
     //if (!displyedPlaces.isEmpty()) on_resultsList_itemClicked(NULL);
 }
