@@ -1,8 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>qtquickcontrols2.conf</file>
-        <file>qml/HealthFacility.qml</file>
-        <file>qml/School.qml</file>
-        <file>qml/main.qml</file>
-    </qresource>
-</RCC>
