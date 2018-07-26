@@ -9,7 +9,6 @@ QT       += positioning
 QT += network
 QT += quickwidgets
 
-
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = UNICEF-Project
@@ -54,9 +53,13 @@ FORMS += \
 QMAKE_CXXFLAGS += -std=c++0x
 
 DISTFILES += \
-    main.qml \
-    qml/HealthFacility.qml \
-    qml/School.qml \
-    qml/main.qml
+    Map.qml \
+    Sprite.qml \
+    Scripts.js \
+    Lines.qml
 
-RESOURCES += qml.qrc
+copydata.commands  = $(COPY_DIR) $$PWD/*.qml $$OUT_PWD; $(COPY_DIR) $$PWD/*.js $$OUT_PWD
+first.depends = $(first) copydata
+export(first.depends)
+export(copydata.commands)
+QMAKE_EXTRA_TARGETS += first copydata

@@ -4,6 +4,7 @@
 #include <QGeoCoordinate>
 #include <QString>
 #include <QJsonDocument>
+#include "place.h"
 
 class Comparisons
 {
@@ -16,7 +17,9 @@ public:
     };
     Metric metric;
     double graphDistence(QGeoCoordinate pointA, QGeoCoordinate pointB);
+    double graphDistence(Place* pointA, Place* pointB);
     QList<double> graphDistence(QGeoCoordinate pointA, QList<QGeoCoordinate> pointB);
+    QList<double> graphDistence(Place* pointA, QList<Place*> pointB);
     QString bingMapsAPIKey;
 
 private:
