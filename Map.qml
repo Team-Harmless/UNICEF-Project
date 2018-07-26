@@ -10,6 +10,7 @@ Rectangle {
 
     property real radiusKM: 1000
     property bool clear: false;
+    property real multiplier: 1
 
     Text {
         id: mapModeIndicatior

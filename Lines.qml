@@ -21,4 +21,11 @@ Rectangle {
     transformOrigin: Item.Bottom
     rotation: angle/Math.PI * 180
 
+    Text{
+        text: (distance != 0 ? distance * root.multiplier + (root.multiplier === 1 ? "km" : "mi") : "")
+        rotation: -1 * parent.rotation
+        x: 7
+        y: + 0.5 * parent.height
+    }
+
 }
