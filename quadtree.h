@@ -17,22 +17,25 @@ using namespace std;
 class Quad
 {
     // Hold details of the boundary of this node
-    QGeoCoordinate bottomLeftPoint;
-    QGeoCoordinate topRightPoint;
+
 
     // Contains details of node
-    QSet<Place *> *heldPlacesPtr;
+
 
     // Children of this tree
-    Quad *topLeftTree;
-    Quad *topRightTree;
-    Quad *bottomLeftTree;
-    Quad *bottomRightTree;
+
 
     // height of tree
     int height;
 
 public:
+    Quad *topLeftTree;
+    Quad *topRightTree;
+    Quad *bottomLeftTree;
+    Quad *bottomRightTree;
+    QGeoCoordinate bottomLeftPoint;
+    QSet<Place *> heldPlacesPtr;
+    QGeoCoordinate topRightPoint;
     Quad();
     ~Quad();
     Quad(QSet<Place*> places);
@@ -43,12 +46,15 @@ public:
     static QGeoCoordinate findMidPoint(QGeoCoordinate firstPoint
         , QGeoCoordinate secondPoint);
     static bool inBoundary (QGeoCoordinate givenPoint
-        , QGeoCoordinate bottomLeftPoint, QGeoCoordinate topRightPoint);
+        , QGeoCoordinate BottomLeftPoint, QGeoCoordinate TopRightPoint);
     bool inBoundary(QGeoCoordinate givenPoint);
     bool isOutsideTopRight(QGeoCoordinate givenPoint);
     bool isOutsideBottomLeft(QGeoCoordinate givenPoint);
     QPair<QGeoCoordinate, QGeoCoordinate> adjustSearchBoundaries(
             QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight);
+
+    QSet<Place *> _search(QGeoCoordinate givenBottomLeft
+                        , QGeoCoordinate givenTopRight, int givenHeight);
 
 };
 
