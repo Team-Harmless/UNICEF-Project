@@ -17,8 +17,7 @@ using namespace std;
 class Quad
 {
     // Hold details of the boundary of this node
-    QGeoCoordinate bottomLeftPoint;
-    QGeoCoordinate topRightPoint;
+
 
     // Contains details of node
     QSet<Place *> *heldPlacesPtr;
@@ -30,15 +29,19 @@ class Quad
     Quad *bottomRightTree;
 
     // height of tree
-    int height;
+    int* height;
+
+    bool* isEmpty;
 
 public:
+    QGeoCoordinate *bottomLeftPoint;
+    QGeoCoordinate *topRightPoint;
     Quad();
     ~Quad();
     Quad(QSet<Place*> places);
-    Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight, int depth, QSet<Place*> givenPlaces);
-    QSet<Place *> search(QGeoCoordinate givenBottomLeft
-                        , QGeoCoordinate givenTopRight);
+    Quad(QGeoCoordinate *givenBottomLeft, QGeoCoordinate *givenTopRight, int height, QSet<Place*> givenPlaces);
+    QSet<Place *> search(QGeoCoordinate *givenBottomLeft
+                        , QGeoCoordinate *givenTopRight);
     static Quad createUsingQlist();
     static QGeoCoordinate findMidPoint(QGeoCoordinate firstPoint
         , QGeoCoordinate secondPoint);
@@ -47,8 +50,11 @@ public:
     bool inBoundary(QGeoCoordinate givenPoint);
     bool isOutsideTopRight(QGeoCoordinate givenPoint);
     bool isOutsideBottomLeft(QGeoCoordinate givenPoint);
-    QPair<QGeoCoordinate, QGeoCoordinate> adjustSearchBoundaries(
-            QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight);
+    QPair<QGeoCoordinate*, QGeoCoordinate*> adjustSearchBoundaries(
+            QGeoCoordinate *givenBottomLeft, QGeoCoordinate *givenTopRight);
+
+    QSet<Place *> _search(QGeoCoordinate *givenBottomLeft
+                        , QGeoCoordinate *givenTopRight, int givenHeight);
 
 };
 
