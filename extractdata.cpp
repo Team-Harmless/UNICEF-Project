@@ -76,8 +76,8 @@ QList<Place*> Extractor::getHealthFacilities(QString filepath)
         healthFacility->version = properties["version"].toString();
         healthFacility->upstream = properties["upstream"].toString();
         healthFacility->what3words = properties["what3words"].toString();
-        QJsonObject geometry = properties["geometry"].toObject();
-        QJsonArray  coordinates  = properties["geometry"].toArray();
+        QJsonObject geometry = healthFacilityObject["geometry"].toObject();
+        QJsonArray  coordinates  = geometry["coordinates"].toArray();
         // Latitude is y and is first in file.
         healthFacility->coord.setLatitude(coordinates.at(1).toDouble());
         // Longtitude is x and is second in file.

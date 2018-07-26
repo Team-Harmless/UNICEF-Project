@@ -74,6 +74,7 @@ void Context::update(Quad *placesQuad, Place *newOrigin
                placesQuad->bottomLeftPoint.longitude();
 
    QSet<Place*> relevantPlaces = placesQuad->search(bottomLeftBound, topRightBound);
+   qDebug() << "Got " << relevantPlaces.count() << " results";
 
    qDebug() << "Diagonal search region: " << bottomLeftBound.distanceTo(topRightBound) / 1000;
 
@@ -101,7 +102,7 @@ void Context::update(Quad *placesQuad, Place *newOrigin
    comparisons.metric = metric;
    QList<double> searchResults = comparisons.graphDistence(newOrigin, placesToSearch);
 
-   emit(splat(origin->classType == Place::HlthFac ? "hosp" : "school", 0, 0));
+   emit(splat(origin->classType == Place::HlthFac ? "hosp" : "school", 0, 0, ""));
 
    Place::Type allowed = (origin->classType == Place::HlthFac ? Place::Schl : Place::HlthFac);
 
@@ -111,7 +112,7 @@ void Context::update(Quad *placesQuad, Place *newOrigin
        double result = searchResults[index];
        placePtr = placesToSearch[index];
 
-       if (placePtr->classType == allowed) {
+       if (placePtr->classType == allowed && originPoint.distanceTo(placePtr->coord) / 1000 <= radius) {
        // Cache new distances.
        QPair<QGeoCoordinate, QGeoCoordinate>
                fromToPair(originPoint, placePtr->coord);
@@ -124,7 +125,7 @@ void Context::update(Quad *placesQuad, Place *newOrigin
                originPoint.azimuthTo(placePtr->coord);
 
        polarCoordinates.append(polarCoordinate);
-       emit(splat(polarCoordinate.place->classType == Place::HlthFac ? "hosp" : "school", polarCoordinate.angle, polarCoordinate.distance));
+       emit(splat(polarCoordinate.place->classType == Place::HlthFac ? "hosp" : "school", polarCoordinate.angle, polarCoordinate.distance, placePtr->name));
        }
    } // foreach
 } // update

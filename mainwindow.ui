@@ -110,8 +110,11 @@
             </item>
             <item>
              <widget class="QSlider" name="rSlider">
+              <property name="minimum">
+               <number>1</number>
+              </property>
               <property name="maximum">
-               <number>2000</number>
+               <number>1000</number>
               </property>
               <property name="pageStep">
                <number>1</number>
@@ -129,7 +132,7 @@
           <item>
            <widget class="QLabel" name="radiusLable">
             <property name="text">
-             <string>100.0</string>
+             <string>100</string>
             </property>
            </widget>
           </item>

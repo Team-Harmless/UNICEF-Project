@@ -9,7 +9,7 @@ function createSpriteObjects(type, angle, distance, id) {
     }
 
     component = Qt.createComponent("Sprite.qml");
-    sprite = component.createObject(root, {"angle": angle, "distance": distance,"spriteType":type, "id":id});
+    sprite = component.createObject(root, {"angle": angle, "distance": distance,"spriteType":type, "title":id});
     if (sprite === null) {
         // Error Handling
         console.log("Error creating object");

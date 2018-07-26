@@ -69,7 +69,7 @@ void MainWindow::unitUpdate(double mult) {
 
 void MainWindow::on_rSlider_valueChanged(int value)
 {
-    ui->radiusLable->setText(QString::number((double)value / 10 * distanceMultiplier, 'g', value > 100 ? 4 : 5));
+    ui->radiusLable->setText(QString::number((double)value / 10 * distanceMultiplier, 'g', value > 100 ? 3 : 4));
     rad = (double)value /10;
     //if (!displyedPlaces.isEmpty()) on_resultsList_itemClicked(NULL);
 }
@@ -80,7 +80,7 @@ void MainWindow::on_milesBox_toggled(bool checked) { if (checked) unitUpdate(0.6
 
 void MainWindow::on_searchBar_textChanged(const QString &arg1)
 {
-    //if (arg1 == "") return;
+    if (arg1.endsWith(' ')) return;
     ui->resultsList->clear();
     displyedPlaces.clear();
     Worker *w = new Worker();
@@ -147,23 +147,27 @@ void Worker::doSearch()
     emit(finished());
 }
 
-void MainWindow::on_schoolsBox_toggled(bool)
+void MainWindow::on_schoolsBox_toggled(bool toggle)
 {
+    if (toggle) on_searchBar_textChanged(ui->searchBar->text());
     displayResults();
 }
 
-void MainWindow::on_healthFacilitiesBox_toggled(bool)
+void MainWindow::on_healthFacilitiesBox_toggled(bool toggle)
 {
+    if (toggle) on_searchBar_textChanged(ui->searchBar->text());
     displayResults();
 }
 
-void MainWindow::on_hospitalsBox_toggled(bool)
+void MainWindow::on_hospitalsBox_toggled(bool toggle)
 {
+    if (toggle) on_searchBar_textChanged(ui->searchBar->text());
     displayResults();
 }
 
-void MainWindow::on_clinicsBox_toggled(bool)
+void MainWindow::on_clinicsBox_toggled(bool toggle)
 {
+    if (toggle) on_searchBar_textChanged(ui->searchBar->text());
     displayResults();
 }
 
@@ -203,4 +207,11 @@ void MainWindow::on_resultsList_currentRowChanged(int currentRow)
 void MainWindow::on_resultsList_itemClicked(QListWidgetItem*)
 {
     on_resultsList_currentRowChanged(ui->resultsList->currentRow());
+}
+
+void MainWindow::on_rSlider_sliderReleased()
+{
+    if (displyedPlaces.count() > 0) {
+        on_resultsList_currentRowChanged(ui->resultsList->currentRow());
+    }
 }

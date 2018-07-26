@@ -74,6 +74,8 @@ private slots:
 
     void on_resultsList_itemClicked(QListWidgetItem *);
 
+    void on_rSlider_sliderReleased();
+
 private:
     Ui::MainWindow *ui;
 };

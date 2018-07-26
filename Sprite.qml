@@ -16,6 +16,7 @@ Image{
     property string spriteType: "hosp"
     property real angle: 0;
     property real distance: 0;
+    property string title: "Place"
 
     function getFilePath() {
         if (spriteType == "hosp") {
@@ -40,6 +41,11 @@ Image{
 
     x: calcX() - 25
     y: calcY() - 25
+
+    Text {
+        y: + 52
+        text: title
+    }
 
 
     source: getFilePath()

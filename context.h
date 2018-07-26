@@ -35,7 +35,7 @@ public:
     QList<Polar> polarCoordinates; // Contains points for the UI.
     double currentRadius; // Keep track of the requested radius.
 signals:
-    void splat(QString type, double angle, double distance);
+    void splat(QString type, double angle, double distance, QString name);
     void clearScreen();
     void changeRadius(double rad);
 
