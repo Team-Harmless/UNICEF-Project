@@ -1,7 +1,7 @@
-#include "quadtree.h"
+﻿#include "quadtree.h"
 #include <QDebug>
 
-#define HEIGHT 8
+#define HEIGHT 2
 
 Quad::Quad()
 {
@@ -103,9 +103,9 @@ Quad::Quad(QSet<Place*> places)
 
     // Create additional points in order to make subtrees.
     QGeoCoordinate topLeftPoint
-            (topRightPoint.latitude(), bottomLeftPoint.longitude());
-    QGeoCoordinate bottomRightPoint
             (bottomLeftPoint.latitude(), topRightPoint.longitude());
+    QGeoCoordinate bottomRightPoint
+            (topRightPoint.latitude(), bottomLeftPoint.longitude());
     QGeoCoordinate topMidPoint =
             findMidPoint(topLeftPoint, topRightPoint);
     QGeoCoordinate bottomMidPoint =
@@ -156,9 +156,9 @@ Quad::Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight
 
     // Create additional points in order to make subtrees.
     QGeoCoordinate topLeftPoint
-            (topRightPoint.latitude(), bottomLeftPoint.longitude());
-    QGeoCoordinate bottomRightPoint
             (bottomLeftPoint.latitude(), topRightPoint.longitude());
+    QGeoCoordinate bottomRightPoint
+            (topRightPoint.latitude(), bottomLeftPoint.longitude());
     QGeoCoordinate topMidPoint =
             findMidPoint(topLeftPoint, topRightPoint);
     QGeoCoordinate bottomMidPoint =
@@ -169,7 +169,6 @@ Quad::Quad(QGeoCoordinate givenBottomLeft, QGeoCoordinate givenTopRight
             findMidPoint(bottomRightPoint, topRightPoint);
     QGeoCoordinate centrePoint =
             findMidPoint(leftMidPoint, rightMidPoint);
-
     // Create subtrees.
     topLeftTree = new Quad
             (leftMidPoint, topMidPoint, givenHeight - 1, givenPlaces);
@@ -201,8 +200,6 @@ QSet<Place *> Quad::_search(QGeoCoordinate givenBottomLeft
         foreach (Place *placePtr, heldPlacesPtr)
             if (inBoundary(placePtr->coord, givenBottomLeft, givenTopRight))
                 foundPlaces.insert(placePtr);
-        if (foundPlaces.count() > 0) qDebug() << "Found Places:" << foundPlaces.count() << " Out of " << heldPlacesPtr.count();
-        //qDebug() << "Diagonal: " << givenBottomLeft.distanceTo(givenTopRight) / 1000;
         return foundPlaces;
     } // if
 
@@ -219,7 +216,6 @@ QSet<Place *> Quad::_search(QGeoCoordinate givenBottomLeft
                                             min(givenTopRight.longitude(), topLeftTree->topRightPoint.longitude()));
         QSet<Place*> tmp = topLeftTree->_search(blp, trp, givenHeight - 1);
         foundPlaces = foundPlaces.unite(tmp);
-        //qDebug() << "Places found in TL at hight " << givenHeight << " is " << foundPlaces.count();
     }
 
     if (bottomLeftTree->inBoundary(givenBottomLeft)) {
@@ -227,7 +223,6 @@ QSet<Place *> Quad::_search(QGeoCoordinate givenBottomLeft
         QGeoCoordinate trp = bottomLeftTree->topRightPoint;
         QSet<Place*> tmp = bottomLeftTree->_search(blp, trp, givenHeight - 1);
         foundPlaces = foundPlaces.unite(tmp);
-        //qDebug() << "Places found in BL ah hight " << givenHeight << " is " << foundPlaces.count();
     }
 
     if (topRightTree->inBoundary(givenTopRight)) {
@@ -236,7 +231,6 @@ QSet<Place *> Quad::_search(QGeoCoordinate givenBottomLeft
         //foundPlaces.unite(topRightTree->_search(blp, trp, givenHeight - 1));
         QSet<Place*> tmp = topRightTree->_search(blp, trp, givenHeight - 1);
         foundPlaces = foundPlaces.unite(tmp);
-        //qDebug() << "Places found in TR ah hight " << givenHeight << " is " << foundPlaces.count();
     }
 
     if (bottomRightTree->inBoundary(QGeoCoordinate(givenTopRight.latitude(), givenBottomLeft.longitude()))) {
@@ -247,7 +241,6 @@ QSet<Place *> Quad::_search(QGeoCoordinate givenBottomLeft
         //foundPlaces.unite(bottomRightTree->_search(blp, trp, givenHeight - 1));
         QSet<Place*> tmp = bottomRightTree->_search(blp, trp, givenHeight - 1);
         foundPlaces = foundPlaces.unite(tmp);
-        //qDebug() << "Places found in BR ah hight " << givenHeight << " is " << foundPlaces.count();
     }
 
 
@@ -358,7 +351,6 @@ Quad *schoolsQuad = new Quad(bottomLeft, topRight, 3, schoolsList.toSet());
 
 QSet<Place*> results = schoolsQuad->search(QGeoCoordinate(-5, -79), QGeoCoordinate(13,0));
 
-qDebug() << results.size();
 
 int count = 0;
 foreach (Place * placePtr, results)
@@ -366,7 +358,6 @@ foreach (Place * placePtr, results)
         break;
     else
     {
-        qDebug() << placePtr->name;
         count++;
     }
 */
