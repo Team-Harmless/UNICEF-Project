@@ -28,7 +28,6 @@ void Context::update(Quad *placesQuad, Place *newOrigin
    if (newOrigin != origin || currentRadius < radius)
    {
        origin = newOrigin;
-       polarCoordinates = QList<Polar>();
    } // if
    currentRadius = radius; // TODO : Check for previous radius.
 
@@ -53,6 +52,7 @@ void Context::update(Quad *placesQuad, Place *newOrigin
 
    QSet<Place*> relevantPlaces = placesQuad->search(bottomLeftBound, topRightBound);
 
+   qDebug() << "Diagonal search region: " << bottomLeftBound.distanceTo(topRightBound) / 1000;
 
    QList <Place*> placesToSearch = QList<Place*>();
 
@@ -76,7 +76,7 @@ void Context::update(Quad *placesQuad, Place *newOrigin
    Comparisons  comparisons = Comparisons();
 
    comparisons.metric = metric;
-   QList<double> searchResults = comparisons.graphDistence(origin, placesToSearch);
+   QList<double> searchResults = comparisons.graphDistence(newOrigin, placesToSearch);
 
    Place * placePtr;
    for (int index = 0; index < searchResults.length(); index++)

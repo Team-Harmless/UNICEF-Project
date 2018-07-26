@@ -46,7 +46,7 @@ public:
     static QGeoCoordinate findMidPoint(QGeoCoordinate firstPoint
         , QGeoCoordinate secondPoint);
     static bool inBoundary (QGeoCoordinate givenPoint
-        , QGeoCoordinate bottomLeftPoint, QGeoCoordinate topRightPoint);
+        , QGeoCoordinate BottomLeftPoint, QGeoCoordinate TopRightPoint);
     bool inBoundary(QGeoCoordinate givenPoint);
     bool isOutsideTopRight(QGeoCoordinate givenPoint);
     bool isOutsideBottomLeft(QGeoCoordinate givenPoint);

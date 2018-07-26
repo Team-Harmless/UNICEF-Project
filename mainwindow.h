@@ -51,6 +51,7 @@ private:
     void applyFilter(QList<Place *> *places);
     QString schoolFile;
     QString hospFile;
+    void on_resultsList_currentRowChanged(int currentRow);
 
 private slots:
     void on_actionImport_Schools_triggered();
@@ -70,8 +71,6 @@ private slots:
     void on_clinicsBox_toggled(bool checked);
 
     void on_actionImport_triggered();
-
-    void on_resultsList_currentRowChanged(int currentRow);
 
     void on_resultsList_itemClicked(QListWidgetItem *);
 
