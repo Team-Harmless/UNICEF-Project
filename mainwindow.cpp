@@ -6,7 +6,11 @@
 #include "extractdata.h"
 #include "healthfacility.h"
 #include <QThread>
+
 #include <QQuickWidget>
+#include <QQuickItem>
+#include <QQmlEngine>
+#include <QQmlContext>
 
 double distanceMultiplier = 1;
 QThread *searchThread = NULL;
@@ -28,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->splitter->setStretchFactor(0,0);
     ui->splitter->setStretchFactor(1,1);
+    ui->mapQML->rootContext()->setContextProperty("context", context);
     ui->mapQML->setResizeMode(QQuickWidget::SizeRootObjectToView);
     ui->mapQML->setSource(QUrl::fromLocalFile("Map.qml"));
 }
@@ -193,7 +198,6 @@ void MainWindow::on_resultsList_currentRowChanged(int currentRow)
     context->update(locations, displyedPlaces.at(currentRow),rad ,
                     Comparisons::StrightLineDistance);
 
-    qDebug() << context->polarCoordinates.count();
 }
 
 void MainWindow::on_resultsList_itemClicked(QListWidgetItem*)

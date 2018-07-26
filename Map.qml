@@ -2,15 +2,28 @@ import QtQuick 2.0
 import "Scripts.js" as Scripts
 
 Rectangle {
-
-
-
     id: root
     color: "lightgray"
+
+    Connections {
+        target: context
+        onSplat: addEl(type, angle, distance);
+        onClearScreen: updateMap();
+        onChangeRadius: radiusKM = rad;
+    }
 
     property real radiusKM: 1000
     property bool clear: false;
     property real multiplier: 1
+
+
+    function addEl(type, angle, distence){
+        Scripts.createSpriteObjects(type, angle, distence, "Hosp1");
+    }
+
+    function clear() {
+        updateMap();
+    }
 
     Text {
         id: mapModeIndicatior
@@ -28,9 +41,9 @@ Rectangle {
         anchors.fill: parent
         onClicked: {
             if (!clear) {
-            Scripts.createSpriteObjects("hosp", 0.785398, 800, "Hosp1");
-            Scripts.createSpriteObjects("hosp", -0.785398, 400, "Hosp2");
-            Scripts.createSpriteObjects("school", 0, 0, "Scl1");
+            //Scripts.createSpriteObjects("hosp", 0.785398, 800, "Hosp1");
+            //Scripts.createSpriteObjects("hosp", -0.785398, 400, "Hosp2");
+            //Scripts.createSpriteObjects("school", 0, 0, "Scl1");
             clear = true;
             }
             else {

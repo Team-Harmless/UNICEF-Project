@@ -7,6 +7,7 @@
 #include <quadtree.h>
 #include <place.h>
 #include <comparisons.h>
+#include <QObject>
 
 // Contains the place with its polar coordinates.
 struct Polar
@@ -16,9 +17,10 @@ struct Polar
     double angle;
 };
 
-class Context
-{
+class Context : public QObject {
+        Q_OBJECT
 public:
+    Q_INVOKABLE QList<Polar>getAllTheJucyData();
     Context(); // Initiate object.
 
     // Create object and do a search.
@@ -32,6 +34,11 @@ public:
 
     QList<Polar> polarCoordinates; // Contains points for the UI.
     double currentRadius; // Keep track of the requested radius.
+signals:
+    void splat(QString type, double angle, double distance);
+    void clearScreen();
+    void changeRadius(double rad);
+
 private:
     Place * origin; // If origin changes polar list is refreshed.
 

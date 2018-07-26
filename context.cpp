@@ -1,6 +1,11 @@
 #include "context.h"
 #include <QDebug>
 
+QList<Polar> Context::getAllTheJucyData()
+{
+    return polarCoordinates;
+}
+
 Context::Context()
 {
     origin = nullptr;
@@ -21,6 +26,9 @@ void Context::update(Quad *placesQuad, Place *newOrigin
                      , double radius, enum Comparisons::Metric metric)
 {
     polarCoordinates.clear();
+    emit(clearScreen());
+    emit(changeRadius(radius));
+
    // Empty list of polars if the origin has changed because
    // now distances  are different.
    // If the required radius is smaller, clear the list as well because
@@ -93,12 +101,17 @@ void Context::update(Quad *placesQuad, Place *newOrigin
    comparisons.metric = metric;
    QList<double> searchResults = comparisons.graphDistence(newOrigin, placesToSearch);
 
+   emit(splat(origin->classType == Place::HlthFac ? "hosp" : "school", 0, 0));
+
+   Place::Type allowed = (origin->classType == Place::HlthFac ? Place::Schl : Place::HlthFac);
+
    Place * placePtr;
    for (int index = 0; index < searchResults.length(); index++)
    {
        double result = searchResults[index];
        placePtr = placesToSearch[index];
 
+       if (placePtr->classType == allowed) {
        // Cache new distances.
        QPair<QGeoCoordinate, QGeoCoordinate>
                fromToPair(originPoint, placePtr->coord);
@@ -111,6 +124,8 @@ void Context::update(Quad *placesQuad, Place *newOrigin
                originPoint.azimuthTo(placePtr->coord);
 
        polarCoordinates.append(polarCoordinate);
+       emit(splat(polarCoordinate.place->classType == Place::HlthFac ? "hosp" : "school", polarCoordinate.angle, polarCoordinate.distance));
+       }
    } // foreach
 } // update
 
