@@ -23,7 +23,12 @@ If you want to use it on a platform without QT Creator, follow [these](http://do
 Although untested, the app should run on Android and iOS without modification.
 
 ## How to use
-This will be updated when the UI is finished
+<iframe width="560" height="315" src="https://www.youtube.com/embed/vnm1T06-cK4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+## Test Coverage
+As there has only been 2-3 active member on this project, we have only had the chance
+to test on Linux. Please share your findings and fixes on other platforms! We imagine
+MS Windows could be problematic.
 
 ## Progress
 - [x] Parse JSON files
