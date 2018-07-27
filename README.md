@@ -23,8 +23,26 @@ If you want to use it on a platform without QT Creator, follow [these](http://do
 Although untested, the app should run on Android and iOS without modification.
 
 ## How to use
-You can watch a video that demos the software, as well as talks in a little detail
-about it's implementation [here](https://youtu.be/vnm1T06-cK4)
+### General Use
+When the software is running, you will see a bar at the top with three buttons. Use the first two to select the schools JSON file and Health Facilities geojson file.
+After this, click import. The application will take a second, but soon, the results pane on the left side of the screen will be filled up with all the schools and health facilites.
+On the right side of the screen you will see a circle. This is the simplified map. Clicking on a school or hospital will place that location in the center of the circle and
+plot all health facilites (if you selected a school) or schools (if you selected a health facility). The JSON files are quite full in places, so to get a good feel of the application running best, search for 'Pozo
+Frontera' to see a less cluttered display. You can change the search radius and change between kilometers and miles.
+
+### Bing Maps Intergration
+You can intergrate the application with bing maps for a better experiance. By default, clicking on a place
+(not the center one), will open, in bing maps, the place you clicked on, and clicking on a blue line will bring
+up directions between the selected place and the place that the blue line terminates at. But we can go further.
+At the bottom, you will see "line length = " and some options. The point of our application is to get the
+information you need far quicker than on a normal map, selecting Road distance will change it so that the
+lengths of each line represent the distance by road from the selected place to the terminal place. Travel time
+will make it update to say how many muinutes. In order to use this feature though, you need a bing API key which
+can be got [here](https://www.bingmapsportal.com/).
+
+Any more questions, please email me at james.hobson@arm.com
+
+
 ## Test Coverage
 As there has only been 2-3 active member on this project, we have only had the chance
 to test on Linux. Please share your findings and fixes on other platforms! We imagine
