@@ -23,8 +23,8 @@ If you want to use it on a platform without QT Creator, follow [these](http://do
 Although untested, the app should run on Android and iOS without modification.
 
 ## How to use
-<iframe width="560" height="315" src="https://www.youtube.com/embed/vnm1T06-cK4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-
+You can watch a video that demos the software, as well as talks in a little detail
+about it's implementation [here](https://youtu.be/vnm1T06-cK4)
 ## Test Coverage
 As there has only been 2-3 active member on this project, we have only had the chance
 to test on Linux. Please share your findings and fixes on other platforms! We imagine
