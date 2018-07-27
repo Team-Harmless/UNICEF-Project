@@ -65,7 +65,7 @@ QList<double> Comparisons::graphDistence(Place *pointA, QList<Place *> pointB)
 }
 
 QJsonDocument Comparisons::webRequester(QGeoCoordinate pointA, QList<QGeoCoordinate> pointB) {
-    QUrl url ("https://dev.virtualearth.net/REST/v1/Routes/DistanceMatrix");
+    QUrl url ("http://dev.virtualearth.net/REST/v1/Routes/DistanceMatrix");
     QUrlQuery query;
 
     query.addQueryItem("travelMode","driving");

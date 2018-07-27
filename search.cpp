@@ -9,7 +9,8 @@ Tre* _addSearchableData(Tre *root, char *name, Place *data) {
         root->data = data;
         return root;
     }
-    while (*name - (unsigned char)'a' < 0 || *name - (unsigned char)'a' >= 26) name++; // Ignore non-ascii
+    if (*name - (unsigned char)'a' < 0 || *name - (unsigned char)'a' >= 26)
+        return _addSearchableData(root, name+1, data); // Ignore non-ascii
     unsigned char index = *name - (unsigned char)'a';
     if (root->next[index] == NULL) {
         root->next[index] = (Tre*)malloc(sizeof(Tre));
