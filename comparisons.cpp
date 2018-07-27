@@ -16,6 +16,8 @@ QString coordToStr(QGeoCoordinate c) {
     return QString::number(pointALat) + "," + QString::number(pointALong);
 }
 
+bool finishedRequestBool = false;
+
 Comparisons::Comparisons()
 {
 
@@ -23,6 +25,7 @@ Comparisons::Comparisons()
 
 double Comparisons::graphDistence(QGeoCoordinate pointA, QGeoCoordinate pointB)
 {
+    qDebug() << "Calculating distence by method: " << metric;
     switch (metric) {
         case StrightLineDistance:
             return strightLineMethod(pointA, pointB);
@@ -41,6 +44,7 @@ double Comparisons::graphDistence(Place *pointA, Place *pointB)
 
 QList<double> Comparisons::graphDistence(QGeoCoordinate pointA, QList<QGeoCoordinate> pointB)
 {
+    qDebug() << "Calculating distences by method: " << metric;
     switch (metric) {
         case StrightLineDistance:
             return strightLineMethod(pointA, pointB);
@@ -60,7 +64,7 @@ QList<double> Comparisons::graphDistence(Place *pointA, QList<Place *> pointB)
 }
 
 QJsonDocument Comparisons::webRequester(QGeoCoordinate pointA, QList<QGeoCoordinate> pointB) {
-    QUrl url ("https://dev.virtualearth.net/REST/v1/Routes/DistanceMatrix");
+    QUrl url ("http://dev.virtualearth.net/REST/v1/Routes/DistanceMatrix");
     QUrlQuery query;
 
     query.addQueryItem("travelMode","driving");
@@ -77,12 +81,23 @@ QJsonDocument Comparisons::webRequester(QGeoCoordinate pointA, QList<QGeoCoordin
     qDebug() << url.toString();
 
     QNetworkAccessManager man;
+
     QNetworkRequest request(url);
     QNetworkReply *reply = man.get(request);
-    while(reply->isRunning()) ;;
-    if(reply->error() != QNetworkReply::NoError) return QJsonDocument();
+//    QObject::connect(&man, SIGNAL(finished(QNetworkReply*)), this, SLOT(finishedRequest(QNetworkReply*)));
+//    while(!finishedRequestBool) ;;
+//    finishedRequestBool = false;
+    if(reply->error() != QNetworkReply::NoError) {qDebug() << reply->error(); return QJsonDocument();}
+    qDebug() << reply->readAll();
+
+    qDebug() << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
 
     return QJsonDocument::fromBinaryData(reply->readAll());
+}
+
+void Comparisons::finishedRequest(QNetworkReply*)
+{
+    finishedRequestBool = true;
 }
 
 

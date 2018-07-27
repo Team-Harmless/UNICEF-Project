@@ -97,14 +97,18 @@ void Context::update(Quad *placesQuad, Place *newOrigin
    } //  foreach
 
    // Get new accureate distances from maps API.
-   Comparisons  comparisons = Comparisons();
+   Comparisons  comparisons;
 
    comparisons.metric = metric;
-   QList<double> searchResults = comparisons.graphDistence(newOrigin, placesToSearch);
-
-   emit(splat(origin->classType == Place::HlthFac ? "hosp" : "school", 0, 0, ""));
+   comparisons.bingMapsAPIKey = bingAPIKey;
 
    Place::Type allowed = (origin->classType == Place::HlthFac ? Place::Schl : Place::HlthFac);
+
+   for(int i = placesToSearch.count() - 1; i >= 0; i--)
+       if (placesToSearch.at(i)->classType != allowed || originPoint.distanceTo(placesToSearch.at(i)->coord) / 1000 > radius)
+           placesToSearch.removeAt(i);
+
+   QList<double> searchResults = comparisons.graphDistence(newOrigin, placesToSearch);
 
    Place * placePtr;
    for (int index = 0; index < searchResults.length(); index++)
@@ -112,7 +116,7 @@ void Context::update(Quad *placesQuad, Place *newOrigin
        double result = searchResults[index];
        placePtr = placesToSearch[index];
 
-       if (placePtr->classType == allowed && originPoint.distanceTo(placePtr->coord) / 1000 <= radius) {
+
        // Cache new distances.
        QPair<QGeoCoordinate, QGeoCoordinate>
                fromToPair(originPoint, placePtr->coord);
@@ -126,14 +130,15 @@ void Context::update(Quad *placesQuad, Place *newOrigin
 
        polarCoordinates.append(polarCoordinate);
        emit(splat(polarCoordinate.place->classType == Place::HlthFac ? "hosp" : "school", polarCoordinate.angle, polarCoordinate.distance, placePtr->name));
-       }
+
    } // foreach
+   emit(splat(origin->classType == Place::HlthFac ? "hosp" : "school", 0, 0, ""));
 }
 
 void Context::updateMult(double mult)
 {
     emit(setMultiplier(mult));
-} // update
+}
 
 // TODO:
 // clean cache

@@ -6,16 +6,19 @@
 #include "extractdata.h"
 #include "healthfacility.h"
 #include <QThread>
+#include "comparisons.h"
 
 #include <QQuickWidget>
 #include <QQuickItem>
 #include <QQmlEngine>
 #include <QQmlContext>
+#include <QInputDialog>
 
 double distanceMultiplier = 1;
 QThread *searchThread = NULL;
 QThread *importThread = NULL;
 QThread *qmlBuildThread = NULL;
+Comparisons::Metric distanceMetric = Comparisons::StrightLineDistance;
 
 double rad = 100;
 
@@ -202,7 +205,7 @@ void MainWindow::on_resultsList_currentRowChanged(int currentRow)
 {
     //qDebug() << displyedPlaces.at(currentRow)->name;
     context->update(locations, displyedPlaces.at(currentRow),rad ,
-                    Comparisons::StrightLineDistance);
+                    distanceMetric);
 
 }
 
@@ -213,7 +216,52 @@ void MainWindow::on_resultsList_itemClicked(QListWidgetItem*)
 
 void MainWindow::on_rSlider_sliderReleased()
 {
-    if (displyedPlaces.count() > 0) {
+    if (!ui->actionImport->isEnabled()) {
         on_resultsList_currentRowChanged(ui->resultsList->currentRow());
+    }
+}
+
+void MainWindow::on_radioButton_2_toggled(bool checked)
+{
+    if (checked) {
+        if (context->bingAPIKey == "") {
+            QString apiKey = QInputDialog::getText(this,"Bing API Key",
+                             "In order to calculate road distances and travel time, we use the"
+                             "Bing API. Please enter your API key.");
+            if (apiKey == "") {
+                ui->radioButton->setChecked(true);
+                return;
+            }
+            context->bingAPIKey = apiKey;
+        }
+        distanceMetric = Comparisons::RoadDistance;
+        on_rSlider_sliderReleased();
+    }
+}
+
+void MainWindow::on_radioButton_3_toggled(bool checked)
+{
+    if (checked) {
+        if (context->bingAPIKey == "") {
+            QString apiKey = QInputDialog::getText(this,"Bing API Key",
+                             "In order to calculate road distances and travel time, we use the"
+                             "Bing API. Please enter your API key.");
+            if (apiKey == "") {
+                ui->radioButton->setChecked(true);
+                return;
+            }
+            context->bingAPIKey = apiKey;
+        }
+
+        distanceMetric = Comparisons::timeDistance;
+        on_rSlider_sliderReleased();
+    }
+}
+
+void MainWindow::on_radioButton_toggled(bool checked)
+{
+    if (checked) {
+        distanceMetric = Comparisons::StrightLineDistance;
+        on_rSlider_sliderReleased();
     }
 }

@@ -5,9 +5,12 @@
 #include <QString>
 #include <QJsonDocument>
 #include "place.h"
+#include <QNetworkReply>
+#include <QObject>
 
-class Comparisons
+class Comparisons : public QObject
 {
+    Q_OBJECT
 public:
     Comparisons();
     enum Metric{
@@ -32,6 +35,9 @@ private:
     QList<double> timeMethod(QGeoCoordinate pointA, QList<QGeoCoordinate> pointB);
 
     QJsonDocument webRequester(QGeoCoordinate pointA, QList<QGeoCoordinate> pointB);
+
+public slots:
+    void finishedRequest(QNetworkReply *);
 };
 
 #endif // COMPARISONS_H

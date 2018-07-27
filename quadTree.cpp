@@ -201,10 +201,8 @@ QSet<Place *> Quad::_search(QGeoCoordinate givenBottomLeft
     {
         QSet<Place*> foundPlaces;
         foreach (Place *placePtr, heldPlacesPtr)
-            if (inBoundary(placePtr->coord, givenBottomLeft, givenTopRight)) {
+            if (inBoundary(placePtr->coord, givenBottomLeft, givenTopRight))
                 foundPlaces.insert(placePtr);
-                    qDebug() << placePtr->classType;
-                }
 
         return foundPlaces;
     } // if

@@ -36,6 +36,7 @@ public:
     double currentRadius; // Keep track of the requested radius.
 
     void updateMult(double mult);
+    QString bingAPIKey;
 signals:
     void splat(QString type, double angle, double distance, QString name);
     void clearScreen();
