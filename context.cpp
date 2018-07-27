@@ -1,9 +1,24 @@
 #include "context.h"
 #include <QDebug>
+#include "browserintegrator.h"
+#include <QUrl>
+#include <QDesktopServices>
 
 QList<Polar> Context::getAllTheJucyData()
 {
     return polarCoordinates;
+}
+
+void Context::openSingleInBrowser(int arrayIndex)
+{
+    QUrl url = browserIntegrator::getBingUrlOf(polarCoordinates.at(arrayIndex).place);
+    QDesktopServices::openUrl(url);
+}
+
+void Context::openRouteInBrowser(int arrayIndex)
+{
+    QUrl url = browserIntegrator::getBingUrlDistance(origin, polarCoordinates.at(arrayIndex).place);
+    QDesktopServices::openUrl(url);
 }
 
 Context::Context()
@@ -129,7 +144,7 @@ void Context::update(Quad *placesQuad, Place *newOrigin
                originPoint.azimuthTo(placePtr->coord);
 
        polarCoordinates.append(polarCoordinate);
-       emit(splat(polarCoordinate.place->classType == Place::HlthFac ? "hosp" : "school", polarCoordinate.angle, polarCoordinate.distance, placePtr->name));
+       emit(splat(polarCoordinate.place->classType == Place::HlthFac ? "hosp" : "school", polarCoordinate.angle, polarCoordinate.distance, placePtr->name, index, true));
        if (polarCoordinate.distance > radius) {
            radius = polarCoordinate.distance + 10;
            emit(changeRadius(radius));
@@ -137,7 +152,7 @@ void Context::update(Quad *placesQuad, Place *newOrigin
 
    } // foreach
 
-   emit(splat(origin->classType == Place::HlthFac ? "hosp" : "school", 0, 0, ""));
+   emit(splat(origin->classType == Place::HlthFac ? "hosp" : "school", 0, 0, "", 0, false));
 
 }
 

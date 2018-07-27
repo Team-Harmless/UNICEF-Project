@@ -1,7 +1,7 @@
 ﻿#include "quadtree.h"
 #include <QDebug>
 
-#define HEIGHT 2
+#define HEIGHT 6
 
 Quad::Quad()
 {

@@ -21,6 +21,10 @@ class Context : public QObject {
         Q_OBJECT
 public:
     Q_INVOKABLE QList<Polar>getAllTheJucyData();
+
+    Q_INVOKABLE void openSingleInBrowser(int arrayIndex);
+     Q_INVOKABLE void openRouteInBrowser(int arrayIndex);
+
     Context(); // Initiate object.
 
     // Create object and do a search.
@@ -40,7 +44,7 @@ public:
 
     Comparisons comparisons;
 signals:
-    void splat(QString type, double angle, double distance, QString name);
+    void splat(QString type, double angle, double distance, QString name, int index = 0, bool clickable = false);
     void clearScreen();
     void changeRadius(double rad);
     void setMultiplier(double mult);

@@ -60,7 +60,7 @@ DISTFILES += \
     Scripts.js \
     Lines.qml
 
-copydata.commands  = $(COPY_DIR) $$PWD/*.qml $$OUT_PWD; $(COPY_DIR) $$PWD/*.js; $(COPY_DIR) $$PWD/*.png $$OUT_PWD
+copydata.commands  = $(COPY_DIR) $$PWD/*.qml $$OUT_PWD; $(COPY_DIR) $$PWD/*.js $$OUT_PWD; $(COPY_DIR) $$PWD/*.png $$OUT_PWD
 first.depends = $(first) copydata
 export(first.depends)
 export(copydata.commands)

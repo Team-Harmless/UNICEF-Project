@@ -11,6 +11,8 @@ Rectangle {
 
     property real distance: 0
     property real angle: 0
+    property int arrayIndex: 0
+    property bool clickable: false
 
     color: "darkblue"
 
@@ -29,6 +31,11 @@ Rectangle {
         rotation: -1 * parent.rotation
         x: 7
         y: + 0.5 * parent.height
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: if (clickable) context.openRouteInBrowser(arrayIndex)
     }
 
 }

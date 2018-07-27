@@ -7,7 +7,7 @@ Rectangle {
 
     Connections {
         target: context
-        onSplat: addEl(type, angle, distance, name);
+        onSplat: {addEl(type, angle, distance, name, index, clickable); console.log(index + " " + clickable)}
         onClearScreen: updateMap();
         onChangeRadius: radiusKM = rad;
         onSetMultiplier: multiplier = mult;
@@ -27,8 +27,8 @@ Rectangle {
     property string metric: "Streight Line Distance"
 
 
-    function addEl(type, angle, distence, name){
-        Scripts.createSpriteObjects(type, angle, distence, name);
+    function addEl(type, angle, distence, name, index, clickable){
+        Scripts.createSpriteObjects(type, angle, distence, name, index, clickable);
     }
 
     function clear() {

@@ -17,6 +17,8 @@ Image{
     property real angle: 0;
     property real distance: 0;
     property string title: "Place"
+    property int arrayIndex: 0
+    property bool browserfy: false
 
     function getFilePath() {
         if (spriteType == "hosp") {
@@ -43,6 +45,11 @@ Image{
     Text {
         y: + 52
         text: title
+    }
+
+    MouseArea{
+        anchors.fill: parent
+        onClicked: {if (browserfy) context.openSingleInBrowser(arrayIndex); console.log(browserfy + " " + arrayIndex)}
     }
 
 
