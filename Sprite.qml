@@ -20,11 +20,9 @@ Image{
 
     function getFilePath() {
         if (spriteType == "hosp") {
-            console.log("Hosp image ")
             return "hosp.png"
         }
         else {
-            console.log("School image ")
            return "school.png";
         }
     }

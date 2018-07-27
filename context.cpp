@@ -128,6 +128,11 @@ void Context::update(Quad *placesQuad, Place *newOrigin
        emit(splat(polarCoordinate.place->classType == Place::HlthFac ? "hosp" : "school", polarCoordinate.angle, polarCoordinate.distance, placePtr->name));
        }
    } // foreach
+}
+
+void Context::updateMult(double mult)
+{
+    emit(setMultiplier(mult));
 } // update
 
 // TODO:

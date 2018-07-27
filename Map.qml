@@ -10,6 +10,7 @@ Rectangle {
         onSplat: addEl(type, angle, distance, name);
         onClearScreen: updateMap();
         onChangeRadius: radiusKM = rad;
+        onSetMultiplier: multiplier = mult;
     }
 
     property real radiusKM: 100
@@ -39,7 +40,7 @@ Rectangle {
 
     Text {
         id: radius
-        text: "Radius = " + radiusKM;
+        text: "Radius = " + radiusKM * multiplier + (multiplier === 1 ? "km" : "mi");
         anchors.top: root.top
         anchors.left: root.left
 

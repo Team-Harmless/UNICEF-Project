@@ -65,6 +65,8 @@ void MainWindow::on_actionImport_Hospitals_triggered()
 void MainWindow::unitUpdate(double mult) {
     distanceMultiplier = mult;
     ui->radiusLable->setText(QString::number((double)ui->rSlider->value() / 10 * distanceMultiplier, 'g', ui->rSlider->value() > 100 ? 3 : 2));
+    context->updateMult(distanceMultiplier);
+
 }
 
 void MainWindow::on_rSlider_valueChanged(int value)
