@@ -8,8 +8,11 @@
 class browserIntegrator
 {
 public:
-    QUrl getBingUrlOf(Place * place);
-    QUrl getBingUrlDistance(Place *origin, Place * destination);
+    static QUrl getBingUrlOf(Place * place);
+    static QUrl getBingUrlDistance(Place *origin, Place * destination);
+
+private:
+    static QString toBingFormat(QGeoCoordinate point);
 };
 
 #endif // BROWSERINTEGRATOR_H

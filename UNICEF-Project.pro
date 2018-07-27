@@ -60,8 +60,8 @@ DISTFILES += \
     Scripts.js \
     Lines.qml
 
-copydata.commands  = $(COPY_DIR) $$PWD/*.qml $$OUT_PWD; $(COPY_DIR) $$PWD/*.js $$OUT_PWD
-first.depends = $(first) copydata
-export(first.depends)
-export(copydata.commands)
-QMAKE_EXTRA_TARGETS += first copydata
+#copydata.commands  = $(COPY_DIR) $$PWD/*.qml $$OUT_PWD; $(COPY_DIR) $$PWD/*.js $$OUT_PWD
+#first.depends = $(first) copydata
+#export(first.depends)
+#export(copydata.commands)
+#QMAKE_EXTRA_TARGETS += first copydata
