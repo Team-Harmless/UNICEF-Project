@@ -241,12 +241,12 @@
   </widget>
   <action name="actionImport_Schools">
    <property name="text">
-    <string>Import Schools</string>
+    <string>Select School File</string>
    </property>
   </action>
   <action name="actionImport_Hospitals">
    <property name="text">
-    <string>Import Hospitals</string>
+    <string>Select Health Facility File</string>
    </property>
   </action>
   <action name="actionImport">
