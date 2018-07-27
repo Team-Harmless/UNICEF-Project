@@ -30,12 +30,12 @@ Image{
     }
 
     function calcX() {
-        var ret = parent.width/2 + (Scripts.kmToPx(distance, 2 * parent.radiusKM, (parent.width < parent.height ? parent.width : parent.height) - 20) * Math.sin(angle));
+        var ret = parent.width/2 + (Scripts.kmToPx(1 *distance, 2 * parent.radiusKM, (parent.width < parent.height ? parent.width : parent.height) - 20) * Math.sin(angle));
         return ret
     }
 
     function calcY() {
-        var ret = parent.height/2 + (Scripts.kmToPx(-1 * distance, 2 * parent.radiusKM, (parent.width < parent.height ? parent.width : parent.height) - 20) * Math.cos(angle));
+        var ret = parent.height/2 + (Scripts.kmToPx(1 * distance, 2 * parent.radiusKM, (parent.width < parent.height ? parent.width : parent.height) - 20) * Math.cos(angle));
         return ret
     }
 

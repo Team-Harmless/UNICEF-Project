@@ -23,7 +23,8 @@ Rectangle {
     y: parent.height/2 - height
 
     transformOrigin: Item.Bottom
-    rotation: angle/Math.PI * 180
+    rotation:  (180 -(angle/Math.PI * 180))
+
 
     Text{
         text: (distance != 0 ? parseInt(distance * (root.metric === "Travel Time" ? 1 : root.multiplier),10) +
