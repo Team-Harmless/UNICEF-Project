@@ -28,7 +28,6 @@ Comparisons::Comparisons()
 
 double Comparisons::graphDistence(QGeoCoordinate pointA, QGeoCoordinate pointB)
 {
-    qDebug() << "Calculating distence by method: " << metric;
     switch (metric) {
         case StrightLineDistance:
             return strightLineMethod(pointA, pointB);
@@ -47,7 +46,6 @@ double Comparisons::graphDistence(Place *pointA, Place *pointB)
 
 QList<double> Comparisons::graphDistence(QGeoCoordinate pointA, QList<QGeoCoordinate> pointB)
 {
-    qDebug() << "Calculating distences by method: " << metric;
     switch (metric) {
         case StrightLineDistance:
             return strightLineMethod(pointA, pointB);

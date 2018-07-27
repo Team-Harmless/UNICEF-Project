@@ -49,7 +49,7 @@ Image{
 
     MouseArea{
         anchors.fill: parent
-        onClicked: {if (browserfy) context.openSingleInBrowser(arrayIndex); console.log(browserfy + " " + arrayIndex)}
+        onClicked: if (browserfy) context.openSingleInBrowser(arrayIndex);
     }
 
 

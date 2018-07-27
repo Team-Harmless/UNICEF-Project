@@ -193,7 +193,6 @@ QSet<Place *> Quad::_search(QGeoCoordinate givenBottomLeft
                            , QGeoCoordinate givenTopRight
                            , int givenHeight)
 {
-    qDebug() << "Search diagonal: " << givenBottomLeft.distanceTo(givenTopRight)/ 1000;
 
     QSet<Place*> foundPlaces;
 

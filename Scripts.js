@@ -14,7 +14,6 @@ function createSpriteObjects(type, angle, distance, id, index, clickable) {
         // Error Handling
         console.log("Error creating object");
     }
-    console.log("Is Clickable: " + clickable)
 }
 
 function kmToPx(km, planeKM, planeDim) {

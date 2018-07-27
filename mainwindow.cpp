@@ -208,7 +208,6 @@ void MainWindow::on_resultsList_currentRowChanged(int currentRow)
     searchable = true;
     context->update(locations, displyedPlaces.at(currentRow),rad ,
                     distanceMetric);
-    qDebug() << distanceMetric;
 
 }
 

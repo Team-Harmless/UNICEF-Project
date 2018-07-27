@@ -7,7 +7,7 @@ Rectangle {
 
     Connections {
         target: context
-        onSplat: {addEl(type, angle, distance, name, index, clickable); console.log(index + " " + clickable)}
+        onSplat: addEl(type, angle, distance, name, index, clickable)
         onClearScreen: updateMap();
         onChangeRadius: radiusKM = rad;
         onSetMultiplier: multiplier = mult;

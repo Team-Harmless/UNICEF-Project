@@ -77,21 +77,11 @@ void Context::update(Quad *placesQuad, Place *newOrigin
        topRightBound.setLongitude(placesQuad->topRightPoint.longitude());
    }
 
-   qDebug() << radius;
 
-   qDebug() << "Bottom Left: " << bottomLeftBound.latitude() << ", " << bottomLeftBound.longitude();
-   qDebug() << "Top Right: " << topRightBound.latitude() << ", " << topRightBound.longitude();
 
-   qDebug() << "Big Bound TR: " << placesQuad->topRightPoint.latitude() << ", " <<
-               placesQuad->topRightPoint.longitude();
 
-   qDebug() << "Big Bound BL: " << placesQuad->bottomLeftPoint.latitude() << ", " <<
-               placesQuad->bottomLeftPoint.longitude();
 
    QSet<Place*> relevantPlaces = placesQuad->search(bottomLeftBound, topRightBound);
-   qDebug() << "Got " << relevantPlaces.count() << " results";
-
-   qDebug() << "Diagonal search region: " << bottomLeftBound.distanceTo(topRightBound) / 1000;
 
    QList <Place*> placesToSearch = QList<Place*>();
 
