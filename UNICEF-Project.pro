@@ -36,7 +36,8 @@ SOURCES += \
         search.cpp \
         comparisons.cpp \
         quadTree.cpp \
-        context.cpp
+        context.cpp \
+    browserintegrator.cpp
 HEADERS += \
         mainwindow.h \
         extractdata.h \
@@ -46,7 +47,8 @@ HEADERS += \
         search.h \
         comparisons.h \
         quadtree.h \
-        context.h
+        context.h \
+    browserintegrator.h
 FORMS += \
         mainwindow.ui
 
@@ -58,8 +60,8 @@ DISTFILES += \
     Scripts.js \
     Lines.qml
 
-copydata.commands  = $(COPY_DIR) $$PWD/*.qml $$OUT_PWD; $(COPY_DIR) $$PWD/*.js $$OUT_PWD
-first.depends = $(first) copydata
-export(first.depends)
-export(copydata.commands)
-QMAKE_EXTRA_TARGETS += first copydata
+#copydata.commands  = $(COPY_DIR) $$PWD/*.qml $$OUT_PWD; $(COPY_DIR) $$PWD/*.js $$OUT_PWD
+#first.depends = $(first) copydata
+#export(first.depends)
+#export(copydata.commands)
+#QMAKE_EXTRA_TARGETS += first copydata
