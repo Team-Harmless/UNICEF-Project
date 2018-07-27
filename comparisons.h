@@ -25,6 +25,7 @@ public:
     QList<double> graphDistence(Place* pointA, QList<Place*> pointB);
     QString bingMapsAPIKey;
 
+
 private:
     double strightLineMethod(QGeoCoordinate pointA, QGeoCoordinate pointB);
     double roadMethod(QGeoCoordinate pointA, QGeoCoordinate pointB);

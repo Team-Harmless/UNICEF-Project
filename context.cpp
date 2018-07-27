@@ -97,7 +97,6 @@ void Context::update(Quad *placesQuad, Place *newOrigin
    } //  foreach
 
    // Get new accureate distances from maps API.
-   Comparisons  comparisons;
 
    comparisons.metric = metric;
    comparisons.bingMapsAPIKey = bingAPIKey;

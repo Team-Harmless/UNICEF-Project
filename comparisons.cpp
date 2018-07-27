@@ -8,6 +8,9 @@
 #include <QJsonValue>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QEventLoop>
+#include <QTimer>
+#include <QJsonParseError>
 
 QString coordToStr(QGeoCoordinate c) {
     double pointALat  = c.latitude();
@@ -64,7 +67,7 @@ QList<double> Comparisons::graphDistence(Place *pointA, QList<Place *> pointB)
 }
 
 QJsonDocument Comparisons::webRequester(QGeoCoordinate pointA, QList<QGeoCoordinate> pointB) {
-    QUrl url ("http://dev.virtualearth.net/REST/v1/Routes/DistanceMatrix");
+    QUrl url ("https://dev.virtualearth.net/REST/v1/Routes/DistanceMatrix");
     QUrlQuery query;
 
     query.addQueryItem("travelMode","driving");
@@ -80,19 +83,27 @@ QJsonDocument Comparisons::webRequester(QGeoCoordinate pointA, QList<QGeoCoordin
 
     qDebug() << url.toString();
 
-    QNetworkAccessManager man;
+    QNetworkAccessManager *man = new QNetworkAccessManager(this);
 
-    QNetworkRequest request(url);
-    QNetworkReply *reply = man.get(request);
-//    QObject::connect(&man, SIGNAL(finished(QNetworkReply*)), this, SLOT(finishedRequest(QNetworkReply*)));
-//    while(!finishedRequestBool) ;;
-//    finishedRequestBool = false;
-    if(reply->error() != QNetworkReply::NoError) {qDebug() << reply->error(); return QJsonDocument();}
-    qDebug() << reply->readAll();
+    QNetworkRequest *request = new QNetworkRequest(url);
+    QTimer timer;
+    timer.setSingleShot(true);
+    QNetworkReply *reply = man->get(*request);
+    QEventLoop eventLoop;
+    QObject::connect(&timer, SIGNAL(timeout()), &eventLoop, SLOT(quit()));
+    QObject::connect(reply, SIGNAL(finished()), &eventLoop, SLOT(quit()));
+    timer.start(30000);
+    eventLoop.exec();
+    if(reply->error() != QNetworkReply::NoError) {qDebug() << "ERROR"; return QJsonDocument();}
 
     qDebug() << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
 
-    return QJsonDocument::fromBinaryData(reply->readAll());
+    QJsonParseError jpe;
+    QJsonDocument ret = QJsonDocument::fromJson(reply->readAll(), &jpe);
+    qDebug() << jpe.errorString() << " at " << jpe.offset << " : ";
+    delete man;
+    delete request;
+    return ret;
 }
 
 void Comparisons::finishedRequest(QNetworkReply*)
@@ -130,7 +141,10 @@ QList<double> Comparisons::roadMethod(QGeoCoordinate pointA, QList<QGeoCoordinat
     QJsonDocument json = webRequester(pointA, pointB);
     QList<double> ret;
     if (json.object().count() == 0) return {0.0};
-    QJsonArray results = json.object()["resourceSets"].toArray().at(0)["results"].toArray();
+    QJsonArray results = json.object()["resourceSets"].toArray().at(0)
+                                      ["resources"].toArray().at(0)
+                                      ["results"].toArray();
+    qDebug() << results;
     for(int i = 0; i < results.count(); i++)
         ret << results.at(i)["travelDistance"].toDouble();
     return ret;
@@ -140,7 +154,9 @@ QList<double> Comparisons::timeMethod(QGeoCoordinate pointA, QList<QGeoCoordinat
     QJsonDocument json = webRequester(pointA, pointB);
     QList<double> ret;
     if (json.object().count() == 0) return {0.0};
-    QJsonArray results = json.object()["resourceSets"].toArray().at(0)["results"].toArray();
+    QJsonArray results = json.object()["resourceSets"].toArray().at(0)
+                                      ["resources"].toArray().at(0)
+                                      ["results"].toArray();
     for(int i = 0; i < results.count(); i++)
         ret << results.at(i)["travelDuration"].toDouble();
     return ret;

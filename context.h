@@ -37,6 +37,8 @@ public:
 
     void updateMult(double mult);
     QString bingAPIKey;
+
+    Comparisons comparisons;
 signals:
     void splat(QString type, double angle, double distance, QString name);
     void clearScreen();
