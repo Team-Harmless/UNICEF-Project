@@ -44,6 +44,7 @@ signals:
     void clearScreen();
     void changeRadius(double rad);
     void setMultiplier(double mult);
+    void setMetric(int met);
 
 private:
     Place * origin; // If origin changes polar list is refreshed.

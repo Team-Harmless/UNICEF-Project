@@ -11,11 +11,20 @@ Rectangle {
         onClearScreen: updateMap();
         onChangeRadius: radiusKM = rad;
         onSetMultiplier: multiplier = mult;
+        onSetMetric: {
+            if (met == 0)
+                metric = "Streight Line Distance"
+            if (met == 1)
+                metric = "Road Distance"
+            if (met == 2)
+                metric = "Travel Time"
+        }
     }
 
     property real radiusKM: 100
     property bool clear: false;
     property real multiplier: 1
+    property string metric: "Streight Line Distance"
 
 
     function addEl(type, angle, distence, name){
@@ -28,7 +37,7 @@ Rectangle {
 
     Text {
         id: mapModeIndicatior
-        text: "Line Length = Stright Line Distance"
+        text: "Line Length = " + metric
         anchors.top: root.top
         anchors.right: root.right
 
@@ -40,7 +49,7 @@ Rectangle {
 
     Text {
         id: radius
-        text: "Radius = " + radiusKM * multiplier + (multiplier === 1 ? "km" : "mi");
+        text: "Radius = " + radiusKM * (metric == "Travel Time" ? 1 : multiplier) + (metric == "Travel Time" ? "minutes" : (multiplier === 1 ? "km" : "mi"));
         anchors.top: root.top
         anchors.left: root.left
 

@@ -100,6 +100,7 @@ void Context::update(Quad *placesQuad, Place *newOrigin
 
    comparisons.metric = metric;
    comparisons.bingMapsAPIKey = bingAPIKey;
+   emit(setMetric(metric));
 
    Place::Type allowed = (origin->classType == Place::HlthFac ? Place::Schl : Place::HlthFac);
 
@@ -129,9 +130,15 @@ void Context::update(Quad *placesQuad, Place *newOrigin
 
        polarCoordinates.append(polarCoordinate);
        emit(splat(polarCoordinate.place->classType == Place::HlthFac ? "hosp" : "school", polarCoordinate.angle, polarCoordinate.distance, placePtr->name));
+       if (polarCoordinate.distance > radius) {
+           radius = polarCoordinate.distance + 10;
+           emit(changeRadius(radius));
+       }
 
    } // foreach
+
    emit(splat(origin->classType == Place::HlthFac ? "hosp" : "school", 0, 0, ""));
+
 }
 
 void Context::updateMult(double mult)

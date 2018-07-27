@@ -19,6 +19,7 @@ QThread *searchThread = NULL;
 QThread *importThread = NULL;
 QThread *qmlBuildThread = NULL;
 Comparisons::Metric distanceMetric = Comparisons::StrightLineDistance;
+bool searchable = false;
 
 double rad = 100;
 
@@ -204,8 +205,10 @@ void MainWindow::on_actionImport_triggered()
 void MainWindow::on_resultsList_currentRowChanged(int currentRow)
 {
     //qDebug() << displyedPlaces.at(currentRow)->name;
+    searchable = true;
     context->update(locations, displyedPlaces.at(currentRow),rad ,
                     distanceMetric);
+    qDebug() << distanceMetric;
 
 }
 
@@ -216,7 +219,7 @@ void MainWindow::on_resultsList_itemClicked(QListWidgetItem*)
 
 void MainWindow::on_rSlider_sliderReleased()
 {
-    if (!ui->actionImport->isEnabled()) {
+    if (searchable) {
         on_resultsList_currentRowChanged(ui->resultsList->currentRow());
     }
 }

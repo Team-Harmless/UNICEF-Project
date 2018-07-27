@@ -24,10 +24,13 @@ Rectangle {
     rotation: angle/Math.PI * 180
 
     Text{
-        text: (distance != 0 ? parseInt(distance * root.multiplier,10) + (root.multiplier === 1 ? "km" : "mi") : "")
+        text: (distance != 0 ? parseInt(distance * (root.metric === "Travel Time" ? 1 : root.multiplier),10) +
+                               (root.metric === "Travel Time" ? " minutes" : (root.multiplier === 1 ? "km" : "mi")) : "")
         rotation: -1 * parent.rotation
         x: 7
         y: + 0.5 * parent.height
     }
 
 }
+
+//radiusKM * (metric == "Travel Time" ? 1 : multiplier) + (metric == "Travel Time" ? "minutes" : (multiplier === 1 ? "km" : "mi"));

@@ -81,7 +81,7 @@ QJsonDocument Comparisons::webRequester(QGeoCoordinate pointA, QList<QGeoCoordin
     query.addQueryItem("key", bingMapsAPIKey);
     url.setQuery(query);
 
-    qDebug() << url.toString();
+    //qDebug() << url.toString();
 
     QNetworkAccessManager *man = new QNetworkAccessManager(this);
 
@@ -96,11 +96,11 @@ QJsonDocument Comparisons::webRequester(QGeoCoordinate pointA, QList<QGeoCoordin
     eventLoop.exec();
     if(reply->error() != QNetworkReply::NoError) {qDebug() << "ERROR"; return QJsonDocument();}
 
-    qDebug() << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    //qDebug() << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
 
     QJsonParseError jpe;
     QJsonDocument ret = QJsonDocument::fromJson(reply->readAll(), &jpe);
-    qDebug() << jpe.errorString() << " at " << jpe.offset << " : ";
+    //qDebug() << jpe.errorString() << " at " << jpe.offset << " : ";
     delete man;
     delete request;
     return ret;
@@ -144,7 +144,7 @@ QList<double> Comparisons::roadMethod(QGeoCoordinate pointA, QList<QGeoCoordinat
     QJsonArray results = json.object()["resourceSets"].toArray().at(0)
                                       ["resources"].toArray().at(0)
                                       ["results"].toArray();
-    qDebug() << results;
+    //qDebug() << results;
     for(int i = 0; i < results.count(); i++)
         ret << results.at(i)["travelDistance"].toDouble();
     return ret;
